@@ -7,29 +7,44 @@ export default {
   theme: {
     extend: {
       colors: {
+        // ─── Charte officielle EEN (Visual Identity Guidelines 2023) ───
         primary: {
-          DEFAULT: '#2563eb',
-          50:  '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+          DEFAULT: '#006BA6',   // Mid Blue EEN — boutons, liens actifs
+          50:  '#f0f8ff',
+          100: '#ddf0fb',
+          200: '#b3e0f5',
+          300: '#64B4E6',       // Light Blue EEN (fin du gradient Curve)
+          400: '#2e9cd4',
+          500: '#0080c0',
+          600: '#006BA6',       // Mid Blue EEN
+          700: '#005a8a',
+          800: '#00587C',       // Dark Blue EEN — sidebar, headers
+          900: '#003d58',
         },
+        // Couleurs sidebar — Dark Blue EEN
         sidebar: {
-          DEFAULT: '#0f172a',
-          hover:   '#1e293b',
-          border:  '#1e293b',
-          text:    '#94a3b8',
-          active:  '#f1f5f9',
+          DEFAULT: '#00587C',   // Dark Blue EEN
+          hover:   '#004d6b',
+          border:  '#004d6b',
+          text:    '#9ec9e0',   // Bleu clair désaturé
+          active:  '#ffffff',
+        },
+        // Accent jaune EEN
+        een: {
+          yellow:     '#FFCC00',
+          'yellow-50':'#fffbeb',
+          blue:       '#006BA6',
+          'blue-dark':'#00587C',
+          'blue-light':'#64B4E6',
         },
       },
       fontFamily: {
         sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+      },
+      backgroundImage: {
+        // Gradient iconique EEN "Curve" : Dark Blue → Light Blue
+        'een-gradient': 'linear-gradient(135deg, #00587C 0%, #006BA6 50%, #64B4E6 100%)',
+        'een-gradient-h': 'linear-gradient(90deg, #00587C 0%, #64B4E6 100%)',
       },
       boxShadow: {
         'card':      '0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06)',

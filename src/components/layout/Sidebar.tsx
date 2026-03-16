@@ -66,8 +66,8 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-150 ${
       isActive
-        ? 'bg-white/10 text-white font-medium'
-        : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+        ? 'bg-white/15 text-white font-medium'
+        : 'text-sidebar-text hover:bg-white/8 hover:text-white'
     }`
 
   return (
@@ -79,14 +79,18 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         ${open ? 'translate-x-0' : '-translate-x-full'}
       `}
     >
-      {/* Logo */}
+      {/* Logo — gradient officiel EEN */}
       <div className="flex items-center gap-3 px-4 h-14 border-b border-sidebar-border shrink-0">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md shrink-0">
+        {/* Carré avec gradient EEN Dark Blue → Light Blue */}
+        <div
+          className="w-8 h-8 rounded-lg flex items-center justify-center shadow-md shrink-0"
+          style={{ background: 'linear-gradient(135deg, #00587C 0%, #64B4E6 100%)' }}
+        >
           <span className="text-white font-bold text-xs tracking-tight">EEN</span>
         </div>
         <div className="flex flex-col leading-tight">
-          <span className="text-white font-semibold text-sm">EEN CVL</span>
-          <span className="text-slate-500 text-[10px]">CCIR Centre</span>
+          <span className="text-white font-semibold text-sm tracking-tight">EEN CVL</span>
+          <span className="text-[10px]" style={{ color: '#9ec9e0' }}>CCIR Centre</span>
         </div>
       </div>
 
@@ -103,7 +107,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         {isAdmin && (
           <>
             <div className="pt-4 pb-1.5 px-3">
-              <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest">
+              <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#5a9ab8' }}>
                 {t('nav.admin')}
               </p>
             </div>
@@ -117,9 +121,15 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         )}
       </nav>
 
-      {/* Version */}
+      {/* Bande décorative EEN en bas — le "Curve" gradient */}
+      <div
+        className="h-1 w-full shrink-0"
+        style={{ background: 'linear-gradient(90deg, #00587C 0%, #006BA6 50%, #64B4E6 100%)' }}
+      />
+
+      {/* Footer */}
       <div className="px-4 py-3 border-t border-sidebar-border">
-        <p className="text-[10px] text-slate-600 font-medium">EEN CVL · v1.1</p>
+        <p className="text-[10px] font-medium" style={{ color: '#5a9ab8' }}>EEN CVL · v1.1</p>
       </div>
     </aside>
   )

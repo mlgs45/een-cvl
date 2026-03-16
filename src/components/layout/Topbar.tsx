@@ -65,8 +65,11 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
             className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-gray-100 active:scale-95 transition-all group"
             title={t('nav.profile')}
           >
-            {/* Avatar */}
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shrink-0 shadow-sm">
+            {/* Avatar avec gradient EEN */}
+            <div
+              className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 shadow-sm"
+              style={{ background: 'linear-gradient(135deg, #00587C 0%, #64B4E6 100%)' }}
+            >
               <span className="text-white font-semibold text-xs leading-none">{initials}</span>
             </div>
             <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 hidden sm:block max-w-[140px] truncate">
