@@ -16,15 +16,15 @@ interface NavItem {
 
 function LayoutIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-      <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+      <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+      <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
     </svg>
   )
 }
 function BuildingIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
       <polyline points="9 22 9 12 15 12 15 22"/>
     </svg>
@@ -32,7 +32,7 @@ function BuildingIcon() {
 }
 function UsersIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
       <circle cx="9" cy="7" r="4"/>
       <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
@@ -42,7 +42,7 @@ function UsersIcon() {
 }
 function TagIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
       <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
       <line x1="7" y1="7" x2="7.01" y2="7"/>
     </svg>
@@ -53,52 +53,74 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
   const { t } = useTranslation()
   const { isAdmin } = useAuth()
 
-  const navItems: NavItem[] = [
+  const mainItems: NavItem[] = [
     { label: t('nav.dashboard'), to: '/dashboard', icon: <LayoutIcon /> },
     { label: t('nav.companies'), to: '/companies', icon: <BuildingIcon /> },
-    { label: t('nav.users'), to: '/admin/users', icon: <UsersIcon />, adminOnly: true },
-    { label: t('nav.activityTypes'), to: '/admin/activity-types', icon: <TagIcon />, adminOnly: true },
   ]
+
+  const adminItems: NavItem[] = [
+    { label: t('nav.users'), to: '/admin/users', icon: <UsersIcon /> },
+    { label: t('nav.activityTypes'), to: '/admin/activity-types', icon: <TagIcon /> },
+  ]
+
+  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+    `flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-150 ${
+      isActive
+        ? 'bg-white/10 text-white font-medium'
+        : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+    }`
 
   return (
     <aside
       className={`
-        fixed inset-y-0 left-0 z-30 w-56 bg-white border-r border-gray-200
+        fixed inset-y-0 left-0 z-30 w-60 bg-sidebar
         flex flex-col transition-transform duration-200 ease-in-out
         lg:relative lg:translate-x-0
         ${open ? 'translate-x-0' : '-translate-x-full'}
       `}
     >
       {/* Logo */}
-      <div className="flex items-center gap-2 px-4 h-14 border-b border-gray-200">
-        <div className="w-7 h-7 rounded bg-primary flex items-center justify-center">
-          <span className="text-white font-bold text-xs">EEN</span>
+      <div className="flex items-center gap-3 px-4 h-14 border-b border-sidebar-border shrink-0">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md shrink-0">
+          <span className="text-white font-bold text-xs tracking-tight">EEN</span>
         </div>
-        <span className="font-semibold text-gray-900 text-sm">EEN CVL</span>
+        <div className="flex flex-col leading-tight">
+          <span className="text-white font-semibold text-sm">EEN CVL</span>
+          <span className="text-slate-500 text-[10px]">CCIR Centre</span>
+        </div>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto">
-        {navItems
-          .filter(item => !item.adminOnly || isAdmin)
-          .map(item => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              onClick={onClose}
-              className={({ isActive }) =>
-                `flex items-center gap-2.5 px-3 py-2 text-sm rounded-md transition-colors ${
-                  isActive
-                    ? 'bg-primary-50 text-primary font-medium'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                }`
-              }
-            >
-              {item.icon}
-              {item.label}
-            </NavLink>
-          ))}
+      {/* Nav principale */}
+      <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-0.5">
+        {mainItems.map(item => (
+          <NavLink key={item.to} to={item.to} onClick={onClose} className={navLinkClass}>
+            {item.icon}
+            {item.label}
+          </NavLink>
+        ))}
+
+        {/* Section admin */}
+        {isAdmin && (
+          <>
+            <div className="pt-4 pb-1.5 px-3">
+              <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest">
+                {t('nav.admin')}
+              </p>
+            </div>
+            {adminItems.map(item => (
+              <NavLink key={item.to} to={item.to} onClick={onClose} className={navLinkClass}>
+                {item.icon}
+                {item.label}
+              </NavLink>
+            ))}
+          </>
+        )}
       </nav>
+
+      {/* Version */}
+      <div className="px-4 py-3 border-t border-sidebar-border">
+        <p className="text-[10px] text-slate-600 font-medium">EEN CVL · v1.1</p>
+      </div>
     </aside>
   )
 }

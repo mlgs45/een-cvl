@@ -15,7 +15,7 @@ export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-slate-50 overflow-hidden">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
