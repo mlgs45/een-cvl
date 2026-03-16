@@ -43,9 +43,12 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
         {/* Lang toggle */}
         <button
           onClick={toggleLang}
-          className="px-2 py-1 text-xs font-medium text-gray-500 hover:text-gray-900 border border-gray-200 rounded transition-colors"
+          className="px-2 py-1 text-xs border border-gray-200 rounded transition-colors flex items-center gap-1"
+          title={i18n.language === 'fr' ? 'Switch to English' : 'Passer en français'}
         >
-          {i18n.language === 'fr' ? 'EN' : 'FR'}
+          <span className={i18n.language === 'fr' ? 'font-semibold text-gray-900' : 'text-gray-400'}>FR</span>
+          <span className="text-gray-300">/</span>
+          <span className={i18n.language === 'en' ? 'font-semibold text-gray-900' : 'text-gray-400'}>EN</span>
         </button>
 
         {/* User + profil + logout */}
