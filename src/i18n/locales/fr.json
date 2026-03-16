@@ -1,0 +1,195 @@
+{
+  "app": {
+    "name": "EEN CVL",
+    "tagline": "Enterprise Europe Network — CCIR Centre"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "companies": "Entreprises",
+    "activities": "Activités",
+    "admin": "Administration",
+    "users": "Utilisateurs",
+    "activityTypes": "Types d'activités",
+    "logout": "Déconnexion",
+    "profile": "Mon profil"
+  },
+  "auth": {
+    "login": "Connexion",
+    "email": "Email",
+    "password": "Mot de passe",
+    "signIn": "Se connecter",
+    "signingIn": "Connexion...",
+    "forgotPassword": "Mot de passe oublié ?",
+    "invalidCredentials": "Identifiants invalides",
+    "logoutSuccess": "Vous êtes déconnecté"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "period": "Période EEN 2025–2028",
+    "totalCompanies": "Entreprises suivies",
+    "totalActivities": "Activités enregistrées",
+    "activitiesByType": "Activités par type",
+    "activitiesByAdvisor": "Activités par conseiller",
+    "filters": {
+      "dateRange": "Période",
+      "advisor": "Conseiller",
+      "activityType": "Type d'activité",
+      "all": "Tous",
+      "reset": "Réinitialiser"
+    },
+    "columns": {
+      "type": "Type d'activité",
+      "count": "Nombre",
+      "advisor": "Conseiller",
+      "total": "Total"
+    }
+  },
+  "companies": {
+    "title": "Entreprises",
+    "new": "Nouvelle entreprise",
+    "search": "Rechercher par nom, mot-clé, ville…",
+    "filterAdvisor": "Filtrer par conseiller",
+    "noResults": "Aucune entreprise trouvée",
+    "columns": {
+      "name": "Nom",
+      "city": "Ville",
+      "eenContact": "Conseiller EEN",
+      "lastActivity": "Dernière activité",
+      "totalActivities": "Activités"
+    },
+    "detail": {
+      "info": "Informations",
+      "contact": "Contact",
+      "activities": "Journal d'activités",
+      "addActivity": "Ajouter une activité",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "confirmDelete": "Supprimer cette entreprise ?",
+      "deleteWarning": "Cette action supprimera également toutes les activités associées."
+    },
+    "form": {
+      "name": "Nom de l'entreprise",
+      "vatNumber": "N° TVA",
+      "address": "Adresse",
+      "postcode": "Code postal",
+      "city": "Ville",
+      "region": "Région",
+      "country": "Pays",
+      "contactName": "Nom du contact",
+      "phone": "Téléphone",
+      "mobile": "Mobile",
+      "email": "Email",
+      "website": "Site web",
+      "keywords": "Mots-clés",
+      "eenContact": "Conseiller EEN référent",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "cancel": "Annuler",
+      "createSuccess": "Entreprise créée",
+      "updateSuccess": "Entreprise mise à jour",
+      "deleteSuccess": "Entreprise supprimée"
+    }
+  },
+  "activities": {
+    "title": "Activités",
+    "new": "Nouvelle activité",
+    "edit": "Modifier l'activité",
+    "noActivities": "Aucune activité enregistrée",
+    "form": {
+      "date": "Date",
+      "activityType": "Type d'activité",
+      "activitySubtype": "Sous-type",
+      "selectType": "Sélectionner un type",
+      "selectSubtype": "Sélectionner un sous-type",
+      "description": "Description",
+      "followUp": "Suivi à prévoir",
+      "followUpDate": "Date de suivi",
+      "notes": "Notes",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "cancel": "Annuler",
+      "createSuccess": "Activité enregistrée",
+      "updateSuccess": "Activité mise à jour",
+      "deleteSuccess": "Activité supprimée",
+      "confirmDelete": "Supprimer cette activité ?"
+    }
+  },
+  "admin": {
+    "title": "Administration",
+    "users": {
+      "title": "Gestion des utilisateurs",
+      "fullName": "Nom",
+      "email": "Email",
+      "organisation": "Organisation",
+      "role": "Rôle",
+      "roles": {
+        "advisor": "Conseiller",
+        "admin": "Administrateur"
+      },
+      "changeRole": "Changer le rôle",
+      "updateSuccess": "Rôle mis à jour",
+      "you": "vous",
+      "invite": {
+        "button": "Nouvel utilisateur",
+        "title": "Créer un utilisateur",
+        "fullName": "Nom complet",
+        "email": "Adresse email",
+        "organisation": "Organisation",
+        "role": "Rôle",
+        "password": "Mot de passe temporaire",
+        "passwordHint": "L'utilisateur pourra le modifier depuis son profil.",
+        "confirmPassword": "Confirmer le mot de passe",
+        "create": "Créer le compte",
+        "creating": "Création en cours…",
+        "success": "Compte créé pour {{name}}",
+        "alreadyExists": "Un compte existe déjà avec cet email",
+        "passwordMismatch": "Les mots de passe ne correspondent pas",
+        "passwordTooShort": "Le mot de passe doit faire au moins 8 caractères"
+      }
+    },
+    "activityTypes": {
+      "title": "Types d'activités",
+      "labelFr": "Libellé FR",
+      "labelEn": "Libellé EN",
+      "code": "Code",
+      "active": "Actif",
+      "subtypes": "Sous-types",
+      "addType": "Ajouter un type",
+      "addSubtype": "Ajouter un sous-type",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "createSuccess": "Type créé",
+      "updateSuccess": "Type mis à jour",
+      "deleteSuccess": "Type supprimé"
+    }
+  },
+  "common": {
+    "loading": "Chargement…",
+    "error": "Une erreur est survenue",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non",
+    "back": "Retour",
+    "noData": "Aucune donnée",
+    "required": "Champ obligatoire",
+    "actions": "Actions",
+    "createdAt": "Créé le",
+    "updatedAt": "Mis à jour le",
+    "createdBy": "Créé par"
+  },
+  "profile": {
+    "title": "Mon profil",
+    "editSection": "Informations personnelles",
+    "email": "Adresse email",
+    "emailReadOnly": "L'email ne peut pas être modifié ici.",
+    "fullName": "Nom complet",
+    "organisation": "Organisation",
+    "save": "Enregistrer les modifications",
+    "saving": "Enregistrement…",
+    "updateSuccess": "Profil mis à jour"
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "app": {
+    "name": "EEN CVL",
+    "tagline": "Enterprise Europe Network — CCIR Centre"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "companies": "Companies",
+    "activities": "Activities",
+    "admin": "Administration",
+    "users": "Users",
+    "activityTypes": "Activity Types",
+    "logout": "Logout",
+    "profile": "My profile"
+  },
+  "auth": {
+    "login": "Login",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "forgotPassword": "Forgot password?",
+    "invalidCredentials": "Invalid credentials",
+    "logoutSuccess": "You have been logged out"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "period": "EEN Period 2025–2028",
+    "totalCompanies": "Tracked Companies",
+    "totalActivities": "Logged Activities",
+    "activitiesByType": "Activities by Type",
+    "activitiesByAdvisor": "Activities by Advisor",
+    "filters": {
+      "dateRange": "Date Range",
+      "advisor": "Advisor",
+      "activityType": "Activity Type",
+      "all": "All",
+      "reset": "Reset"
+    },
+    "columns": {
+      "type": "Activity Type",
+      "count": "Count",
+      "advisor": "Advisor",
+      "total": "Total"
+    }
+  },
+  "companies": {
+    "title": "Companies",
+    "new": "New Company",
+    "search": "Search by name, keyword, city…",
+    "filterAdvisor": "Filter by advisor",
+    "noResults": "No companies found",
+    "columns": {
+      "name": "Name",
+      "city": "City",
+      "eenContact": "EEN Advisor",
+      "lastActivity": "Last Activity",
+      "totalActivities": "Activities"
+    },
+    "detail": {
+      "info": "Information",
+      "contact": "Contact",
+      "activities": "Activity Log",
+      "addActivity": "Add Activity",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Delete this company?",
+      "deleteWarning": "This will also delete all associated activities."
+    },
+    "form": {
+      "name": "Company name",
+      "vatNumber": "VAT Number",
+      "address": "Address",
+      "postcode": "Postcode",
+      "city": "City",
+      "region": "Region",
+      "country": "Country",
+      "contactName": "Contact name",
+      "phone": "Phone",
+      "mobile": "Mobile",
+      "email": "Email",
+      "website": "Website",
+      "keywords": "Keywords",
+      "eenContact": "EEN Advisor",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "createSuccess": "Company created",
+      "updateSuccess": "Company updated",
+      "deleteSuccess": "Company deleted"
+    }
+  },
+  "activities": {
+    "title": "Activities",
+    "new": "New Activity",
+    "edit": "Edit Activity",
+    "noActivities": "No activities logged",
+    "form": {
+      "date": "Date",
+      "activityType": "Activity Type",
+      "activitySubtype": "Sub-type",
+      "selectType": "Select a type",
+      "selectSubtype": "Select a sub-type",
+      "description": "Description",
+      "followUp": "Follow-up planned",
+      "followUpDate": "Follow-up date",
+      "notes": "Notes",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "createSuccess": "Activity saved",
+      "updateSuccess": "Activity updated",
+      "deleteSuccess": "Activity deleted",
+      "confirmDelete": "Delete this activity?"
+    }
+  },
+  "admin": {
+    "title": "Administration",
+    "users": {
+      "title": "User Management",
+      "fullName": "Name",
+      "email": "Email",
+      "organisation": "Organisation",
+      "role": "Role",
+      "roles": {
+        "advisor": "Advisor",
+        "admin": "Administrator"
+      },
+      "changeRole": "Change role",
+      "updateSuccess": "Role updated",
+      "you": "you",
+      "invite": {
+        "button": "New user",
+        "title": "Create a user",
+        "fullName": "Full name",
+        "email": "Email address",
+        "organisation": "Organisation",
+        "role": "Role",
+        "password": "Temporary password",
+        "passwordHint": "The user will be able to change it from their profile.",
+        "confirmPassword": "Confirm password",
+        "create": "Create account",
+        "creating": "Creating…",
+        "success": "Account created for {{name}}",
+        "alreadyExists": "An account already exists with this email",
+        "passwordMismatch": "Passwords do not match",
+        "passwordTooShort": "Password must be at least 8 characters"
+      }
+    },
+    "activityTypes": {
+      "title": "Activity Types",
+      "labelFr": "FR Label",
+      "labelEn": "EN Label",
+      "code": "Code",
+      "active": "Active",
+      "subtypes": "Subtypes",
+      "addType": "Add Type",
+      "addSubtype": "Add Subtype",
+      "save": "Save",
+      "cancel": "Cancel",
+      "createSuccess": "Type created",
+      "updateSuccess": "Type updated",
+      "deleteSuccess": "Type deleted"
+    }
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "back": "Back",
+    "noData": "No data",
+    "required": "Required field",
+    "actions": "Actions",
+    "createdAt": "Created at",
+    "updatedAt": "Updated at",
+    "createdBy": "Created by"
+  },
+  "profile": {
+    "title": "My profile",
+    "editSection": "Personal information",
+    "email": "Email address",
+    "emailReadOnly": "Email cannot be changed here.",
+    "fullName": "Full name",
+    "organisation": "Organisation",
+    "save": "Save changes",
+    "saving": "Saving…",
+    "updateSuccess": "Profile updated"
+  }
+}

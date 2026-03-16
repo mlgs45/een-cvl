@@ -1,0 +1,319 @@
+import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useQuery } from '@tanstack/react-query'
+import { supabase } from '../lib/supabase'
+import type { ActivityRow, ActivityTypeRow, UserRow } from '../types/database'
+import { format } from 'date-fns'
+
+const EEN_START = '2025-07-01'
+const EEN_END = '2028-12-31'
+
+interface ActivityWithJoins extends ActivityRow {
+  activity_types: { label_fr: string; label_en: string } | null
+  users: { full_name: string } | null
+}
+
+export default function DashboardPage() {
+  const { t, i18n } = useTranslation()
+  const lang = i18n.language as 'fr' | 'en'
+
+  const [dateFrom, setDateFrom] = useState(EEN_START)
+  const [dateTo, setDateTo] = useState(EEN_END)
+  const [filterAdvisor, setFilterAdvisor] = useState('')
+  const [filterType, setFilterType] = useState('')
+
+  const { data: activities = [], isLoading: activitiesLoading } = useQuery({
+    queryKey: ['dashboard-activities', dateFrom, dateTo],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('activities')
+        .select(`
+          *,
+          activity_types ( label_fr, label_en ),
+          users ( full_name )
+        `)
+        .gte('date', dateFrom)
+        .lte('date', dateTo)
+        .order('date', { ascending: false })
+      if (error) throw error
+      return data as ActivityWithJoins[]
+    },
+  })
+
+  const { data: activityTypes = [] } = useQuery({
+    queryKey: ['activity-types'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('activity_types')
+        .select('*')
+        .order('sort_order')
+      if (error) throw error
+      return data as ActivityTypeRow[]
+    },
+  })
+
+  const { data: advisors = [] } = useQuery({
+    queryKey: ['advisors'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('users').select('*').order('full_name')
+      if (error) throw error
+      return data as UserRow[]
+    },
+  })
+
+  const { data: companiesCount = 0 } = useQuery({
+    queryKey: ['companies-count'],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('companies')
+        .select('id', { count: 'exact', head: true })
+      if (error) throw error
+      return count ?? 0
+    },
+  })
+
+  // Filter activities
+  const filtered = useMemo(() => {
+    return activities.filter(a => {
+      if (filterAdvisor && a.created_by !== filterAdvisor) return false
+      if (filterType && a.activity_type_id !== filterType) return false
+      return true
+    })
+  }, [activities, filterAdvisor, filterType])
+
+  // By type
+  const byType = useMemo(() => {
+    const map = new Map<string, { label: string; count: number }>()
+    for (const at of activityTypes) {
+      const label = lang === 'fr' ? at.label_fr : at.label_en
+      map.set(at.id, { label, count: 0 })
+    }
+    for (const a of filtered) {
+      const entry = map.get(a.activity_type_id)
+      if (entry) entry.count++
+    }
+    return Array.from(map.values()).filter(e => e.count > 0)
+  }, [filtered, activityTypes, lang])
+
+  // By advisor
+  const byAdvisor = useMemo(() => {
+    const map = new Map<string, { name: string; count: number }>()
+    for (const a of filtered) {
+      const name = a.users?.full_name ?? '—'
+      const entry = map.get(a.created_by)
+      if (entry) {
+        entry.count++
+      } else {
+        map.set(a.created_by, { name, count: 1 })
+      }
+    }
+    return Array.from(map.values()).sort((a, b) => b.count - a.count)
+  }, [filtered])
+
+  function resetFilters() {
+    setDateFrom(EEN_START)
+    setDateTo(EEN_END)
+    setFilterAdvisor('')
+    setFilterType('')
+  }
+
+  return (
+    <div className="max-w-5xl mx-auto space-y-6">
+      <div>
+        <h1 className="text-xl font-semibold text-gray-900">{t('dashboard.title')}</h1>
+        <p className="text-sm text-gray-500 mt-0.5">{t('dashboard.period')}</p>
+      </div>
+
+      {/* KPI cards */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="card p-5">
+          <p className="text-xs text-gray-500 uppercase tracking-wide">{t('dashboard.totalCompanies')}</p>
+          {activitiesLoading ? (
+            <div className="h-8 w-16 bg-gray-100 rounded animate-pulse mt-2" />
+          ) : (
+            <p className="text-3xl font-bold text-gray-900 mt-1">{companiesCount}</p>
+          )}
+        </div>
+        <div className="card p-5">
+          <p className="text-xs text-gray-500 uppercase tracking-wide">{t('dashboard.totalActivities')}</p>
+          {activitiesLoading ? (
+            <div className="h-8 w-16 bg-gray-100 rounded animate-pulse mt-2" />
+          ) : (
+            <p className="text-3xl font-bold text-gray-900 mt-1">{filtered.length}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="card p-4">
+        <p className="text-sm font-medium text-gray-700 mb-3">{t('common.actions')}</p>
+        <div className="flex flex-wrap gap-3 items-end">
+          <div>
+            <label className="label text-xs">{t('dashboard.filters.dateRange')} —</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="date"
+                className="input w-36 text-xs"
+                value={dateFrom}
+                onChange={e => setDateFrom(e.target.value)}
+              />
+              <span className="text-gray-400 text-xs">→</span>
+              <input
+                type="date"
+                className="input w-36 text-xs"
+                value={dateTo}
+                onChange={e => setDateTo(e.target.value)}
+              />
+            </div>
+          </div>
+          <div>
+            <label className="label text-xs">{t('dashboard.filters.advisor')}</label>
+            <select
+              className="input w-44 text-xs"
+              value={filterAdvisor}
+              onChange={e => setFilterAdvisor(e.target.value)}
+            >
+              <option value="">{t('dashboard.filters.all')}</option>
+              {advisors.map(a => (
+                <option key={a.id} value={a.id}>{a.full_name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="label text-xs">{t('dashboard.filters.activityType')}</label>
+            <select
+              className="input w-52 text-xs"
+              value={filterType}
+              onChange={e => setFilterType(e.target.value)}
+            >
+              <option value="">{t('dashboard.filters.all')}</option>
+              {activityTypes.map(at => (
+                <option key={at.id} value={at.id}>
+                  {lang === 'fr' ? at.label_fr : at.label_en}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button onClick={resetFilters} className="btn-secondary text-xs">
+            {t('dashboard.filters.reset')}
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* By type */}
+        <div className="card overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-100">
+            <h2 className="text-sm font-medium text-gray-900">{t('dashboard.activitiesByType')}</h2>
+          </div>
+          {activitiesLoading ? (
+            <div className="p-4 space-y-2">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="h-4 bg-gray-100 rounded animate-pulse" style={{ width: `${80 - i * 10}%` }} />
+              ))}
+            </div>
+          ) : byType.length === 0 ? (
+            <p className="p-4 text-sm text-gray-400">{t('common.noData')}</p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">{t('dashboard.columns.type')}</th>
+                  <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">{t('dashboard.columns.count')}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {byType.map(row => (
+                  <tr key={row.label} className="hover:bg-gray-50">
+                    <td className="px-4 py-2 text-gray-700">{row.label}</td>
+                    <td className="px-4 py-2 text-right font-medium text-gray-900">{row.count}</td>
+                  </tr>
+                ))}
+                <tr className="bg-gray-50 font-medium">
+                  <td className="px-4 py-2 text-gray-900">{t('dashboard.columns.total')}</td>
+                  <td className="px-4 py-2 text-right text-gray-900">
+                    {byType.reduce((s, r) => s + r.count, 0)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {/* By advisor */}
+        <div className="card overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-100">
+            <h2 className="text-sm font-medium text-gray-900">{t('dashboard.activitiesByAdvisor')}</h2>
+          </div>
+          {activitiesLoading ? (
+            <div className="p-4 space-y-2">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="h-4 bg-gray-100 rounded animate-pulse" style={{ width: `${70 - i * 15}%` }} />
+              ))}
+            </div>
+          ) : byAdvisor.length === 0 ? (
+            <p className="p-4 text-sm text-gray-400">{t('common.noData')}</p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">{t('dashboard.columns.advisor')}</th>
+                  <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">{t('dashboard.columns.count')}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {byAdvisor.map(row => (
+                  <tr key={row.name} className="hover:bg-gray-50">
+                    <td className="px-4 py-2 text-gray-700">{row.name}</td>
+                    <td className="px-4 py-2 text-right font-medium text-gray-900">{row.count}</td>
+                  </tr>
+                ))}
+                <tr className="bg-gray-50 font-medium">
+                  <td className="px-4 py-2 text-gray-900">{t('dashboard.columns.total')}</td>
+                  <td className="px-4 py-2 text-right text-gray-900">
+                    {byAdvisor.reduce((s, r) => s + r.count, 0)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+
+      {/* Recent activities mini-table */}
+      {filtered.length > 0 && (
+        <div className="card overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-100">
+            <h2 className="text-sm font-medium text-gray-900">Activités récentes</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Date</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">{t('dashboard.columns.type')}</th>
+                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">{t('dashboard.columns.advisor')}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {filtered.slice(0, 10).map(a => (
+                  <tr key={a.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-2 text-gray-500 tabular-nums">
+                      {format(new Date(a.date), 'dd/MM/yyyy')}
+                    </td>
+                    <td className="px-4 py-2 text-gray-700">
+                      {lang === 'fr'
+                        ? a.activity_types?.label_fr
+                        : a.activity_types?.label_en}
+                    </td>
+                    <td className="px-4 py-2 text-gray-700">{a.users?.full_name ?? '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
