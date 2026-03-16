@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -19,14 +19,6 @@ const ProfilePage            = lazy(() => import('./pages/ProfilePage'))
 const AdminUsersPage         = lazy(() => import('./pages/admin/AdminUsersPage'))
 const AdminActivityTypesPage = lazy(() => import('./pages/admin/AdminActivityTypesPage'))
 
-function PageLoader() {
-  return (
-    <div className="flex items-center justify-center h-48">
-      <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-    </div>
-  )
-}
-
 export default function App() {
   return (
     <AuthProvider>
@@ -35,20 +27,18 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Suspense fallback={<PageLoader />}>
-              <Route path="/dashboard"            element={<DashboardPage />} />
-              <Route path="/companies"            element={<CompaniesPage />} />
-              <Route path="/companies/new"        element={<CompanyNewPage />} />
-              <Route path="/companies/:id"        element={<CompanyDetailPage />} />
-              <Route path="/companies/:id/edit"   element={<CompanyEditPage />} />
-              <Route path="/activities/new"       element={<ActivityFormPage />} />
-              <Route path="/activities/:id/edit"  element={<ActivityFormPage />} />
-              <Route path="/profile"              element={<ProfilePage />} />
-              <Route element={<AdminRoute />}>
-                <Route path="/admin/users"          element={<AdminUsersPage />} />
-                <Route path="/admin/activity-types" element={<AdminActivityTypesPage />} />
-              </Route>
-            </Suspense>
+            <Route path="/dashboard"            element={<DashboardPage />} />
+            <Route path="/companies"            element={<CompaniesPage />} />
+            <Route path="/companies/new"        element={<CompanyNewPage />} />
+            <Route path="/companies/:id"        element={<CompanyDetailPage />} />
+            <Route path="/companies/:id/edit"   element={<CompanyEditPage />} />
+            <Route path="/activities/new"       element={<ActivityFormPage />} />
+            <Route path="/activities/:id/edit"  element={<ActivityFormPage />} />
+            <Route path="/profile"              element={<ProfilePage />} />
+            <Route element={<AdminRoute />}>
+              <Route path="/admin/users"          element={<AdminUsersPage />} />
+              <Route path="/admin/activity-types" element={<AdminActivityTypesPage />} />
+            </Route>
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
