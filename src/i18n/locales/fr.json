@@ -67,6 +67,7 @@
       "confirmDelete": "Supprimer cette entreprise ?",
       "deleteWarning": "Cette action supprimera également toutes les activités associées."
     },
+    "import": "Importer",
     "form": {
       "name": "Nom de l'entreprise",
       "vatNumber": "N° TVA",
@@ -88,6 +89,56 @@
       "createSuccess": "Entreprise créée",
       "updateSuccess": "Entreprise mise à jour",
       "deleteSuccess": "Entreprise supprimée"
+    },
+    "importPage": {
+      "title": "Importer des entreprises",
+      "steps": {
+        "upload": "Fichier",
+        "mapping": "Colonnes",
+        "preview": "Aperçu",
+        "result": "Résultat"
+      },
+      "upload": {
+        "dropzone": "Glissez un fichier CSV ou Excel ici",
+        "or": "ou",
+        "browse": "parcourir",
+        "accepted": "Formats acceptés : .csv, .xls, .xlsx",
+        "parsing": "Lecture du fichier…",
+        "error": "Impossible de lire ce fichier. Vérifiez le format.",
+        "emptyFile": "Le fichier ne contient aucune donnée."
+      },
+      "mapping": {
+        "subtitle": "{{count}} colonnes détectées — associez-les aux champs entreprise",
+        "fileColumn": "Colonne du fichier",
+        "targetField": "Champ entreprise",
+        "ignore": "— ne pas importer —",
+        "noMapping": "Le champ « Nom » doit être associé à au moins une colonne.",
+        "duplicate": "Ce champ est déjà utilisé par une autre colonne.",
+        "reset": "Réinitialiser la détection automatique",
+        "next": "Suivant"
+      },
+      "preview": {
+        "valid": "à importer",
+        "duplicates": "doublon(s)",
+        "errors": "erreur(s)",
+        "overwrite": "Mettre à jour les doublons existants",
+        "tableTitle": "Aperçu — {{shown}} sur {{total}} lignes",
+        "status": "Statut",
+        "statusOk": "À importer",
+        "statusSkip": "Ignoré",
+        "statusUpdate": "À mettre à jour",
+        "statusError": "Erreur",
+        "import": "Importer {{count}} entreprise(s)",
+        "back": "Retour"
+      },
+      "result": {
+        "importing": "Import en cours…",
+        "imported": "{{count}} entreprise(s) importée(s)",
+        "updated": "{{count}} doublon(s) mis à jour",
+        "skipped": "{{count}} ligne(s) ignorée(s)",
+        "failed": "{{count}} erreur(s) lors de l'import",
+        "done": "Voir les entreprises"
+      }
     }
   },
   "activities": {

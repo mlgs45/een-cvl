@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage'
 const DashboardPage          = lazy(() => import('./pages/DashboardPage'))
 const CompaniesPage          = lazy(() => import('./pages/CompaniesPage'))
 const CompanyNewPage         = lazy(() => import('./pages/CompanyNewPage'))
+const CompanyImportPage      = lazy(() => import('./pages/CompanyImportPage'))
 const CompanyDetailPage      = lazy(() => import('./pages/CompanyDetailPage'))
 const CompanyEditPage        = lazy(() => import('./pages/CompanyEditPage'))
 const ActivityFormPage       = lazy(() => import('./pages/ActivityFormPage'))
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="/dashboard"            element={<DashboardPage />} />
             <Route path="/companies"            element={<CompaniesPage />} />
             <Route path="/companies/new"        element={<CompanyNewPage />} />
+            <Route path="/companies/import"     element={<CompanyImportPage />} />
             <Route path="/companies/:id"        element={<CompanyDetailPage />} />
             <Route path="/companies/:id/edit"   element={<CompanyEditPage />} />
             <Route path="/activities/new"       element={<ActivityFormPage />} />

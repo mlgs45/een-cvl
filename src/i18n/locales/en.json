@@ -67,6 +67,7 @@
       "confirmDelete": "Delete this company?",
       "deleteWarning": "This will also delete all associated activities."
     },
+    "import": "Import",
     "form": {
       "name": "Company name",
       "vatNumber": "VAT Number",
@@ -88,6 +89,56 @@
       "createSuccess": "Company created",
       "updateSuccess": "Company updated",
       "deleteSuccess": "Company deleted"
+    },
+    "importPage": {
+      "title": "Import Companies",
+      "steps": {
+        "upload": "File",
+        "mapping": "Columns",
+        "preview": "Preview",
+        "result": "Result"
+      },
+      "upload": {
+        "dropzone": "Drop a CSV or Excel file here",
+        "or": "or",
+        "browse": "browse",
+        "accepted": "Accepted formats: .csv, .xls, .xlsx",
+        "parsing": "Reading file…",
+        "error": "Unable to read this file. Check the format.",
+        "emptyFile": "The file contains no data."
+      },
+      "mapping": {
+        "subtitle": "{{count}} columns detected — map them to company fields",
+        "fileColumn": "File column",
+        "targetField": "Company field",
+        "ignore": "— do not import —",
+        "noMapping": "The \"Name\" field must be mapped to at least one column.",
+        "duplicate": "This field is already used by another column.",
+        "reset": "Reset auto-detection",
+        "next": "Next"
+      },
+      "preview": {
+        "valid": "to import",
+        "duplicates": "duplicate(s)",
+        "errors": "error(s)",
+        "overwrite": "Update existing duplicates",
+        "tableTitle": "Preview — {{shown}} of {{total}} rows",
+        "status": "Status",
+        "statusOk": "To import",
+        "statusSkip": "Skipped",
+        "statusUpdate": "To update",
+        "statusError": "Error",
+        "import": "Import {{count}} company(ies)",
+        "back": "Back"
+      },
+      "result": {
+        "importing": "Importing…",
+        "imported": "{{count}} company(ies) imported",
+        "updated": "{{count}} duplicate(s) updated",
+        "skipped": "{{count}} row(s) skipped",
+        "failed": "{{count}} error(s) during import",
+        "done": "View companies"
+      }
     }
   },
   "activities": {
