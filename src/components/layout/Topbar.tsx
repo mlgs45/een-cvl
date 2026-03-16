@@ -28,7 +28,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
     : '?'
 
   return (
-    <header className="h-14 bg-white shadow-topbar flex items-center justify-between px-4 lg:px-6 shrink-0 z-10">
+    <header className="h-16 bg-white shadow-topbar flex items-center justify-between px-4 lg:px-6 shrink-0 z-10">
       {/* Bouton menu mobile */}
       <button
         onClick={onMenuClick}

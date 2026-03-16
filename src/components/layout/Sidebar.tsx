@@ -79,19 +79,17 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         ${open ? 'translate-x-0' : '-translate-x-full'}
       `}
     >
-      {/* Logo — gradient officiel EEN */}
-      <div className="flex items-center gap-3 px-4 h-14 border-b border-sidebar-border shrink-0">
-        {/* Carré avec gradient EEN Dark Blue → Light Blue */}
-        <div
-          className="w-8 h-8 rounded-lg flex items-center justify-center shadow-md shrink-0"
-          style={{ background: 'linear-gradient(135deg, #00587C 0%, #64B4E6 100%)' }}
-        >
-          <span className="text-white font-bold text-xs tracking-tight">EEN</span>
-        </div>
-        <div className="flex flex-col leading-tight">
-          <span className="text-white font-semibold text-sm tracking-tight">EEN CVL</span>
-          <span className="text-[10px]" style={{ color: '#9ec9e0' }}>CCIR Centre</span>
-        </div>
+      {/* Logo officiel EEN */}
+      <div className="flex flex-col items-start justify-center px-4 h-16 border-b border-sidebar-border shrink-0 gap-1">
+        <img
+          src="/een-logo.png"
+          alt="Enterprise Europe Network"
+          className="h-7 w-auto object-contain"
+          draggable={false}
+        />
+        <span className="text-[10px] font-medium tracking-wide" style={{ color: '#9ec9e0' }}>
+          CCIR Centre — CVL
+        </span>
       </div>
 
       {/* Nav principale */}
