@@ -80,14 +80,14 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
       `}
     >
       {/* Logo officiel EEN */}
-      <div className="flex flex-col items-start justify-center px-4 h-16 border-b border-sidebar-border shrink-0 gap-1">
+      <div className="flex flex-col items-center justify-center px-4 py-4 border-b border-sidebar-border shrink-0 gap-2">
         <img
           src="/een-logo.png"
           alt="Enterprise Europe Network"
-          className="h-7 w-auto object-contain"
+          className="w-44 h-auto object-contain"
           draggable={false}
         />
-        <span className="text-[10px] font-medium tracking-wide" style={{ color: '#9ec9e0' }}>
+        <span className="text-[10px] font-medium tracking-widest uppercase" style={{ color: '#9ec9e0' }}>
           CCIR Centre — CVL
         </span>
       </div>
