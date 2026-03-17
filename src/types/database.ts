@@ -264,7 +264,6 @@ export interface Database {
         }
         Relationships: []
       }
-    }
       kpi_objectives: {
         Row: {
           id: string
@@ -355,6 +354,7 @@ export interface Database {
           kpi_code: string
           actual: number
         }
+        Relationships: []
       }
     }
     Functions: Record<string, never>

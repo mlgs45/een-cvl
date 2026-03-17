@@ -175,13 +175,14 @@ export default function KpiObjectifsPage() {
 
     // Sauvegarder objectifs conseillers (seulement pour une année spécifique)
     if (selectedYear !== 'all' && advisors.length > 0) {
-      const upserts = advisors.flatMap(advisor =>
-        KPI_DEFS.map(kpi => {
+        type KpiObjUpsert = { id?: string; advisor_id: string; kpi_code: string; year: number; target_count: number; etp: number; is_nc: boolean }
+      const upserts: KpiObjUpsert[] = []
+      for (const advisor of advisors) {
+        for (const kpi of KPI_DEFS) {
           const key = `${advisor.id}:${kpi.code}`
           const cell = advisorGrid[key]
-          if (!cell) return null
-          return {
-            ...(cell.existing_id ? { id: cell.existing_id } : {}),
+          if (!cell) continue
+          const row: KpiObjUpsert = {
             advisor_id:   advisor.id,
             kpi_code:     kpi.code,
             year:         selectedYear as number,
@@ -189,12 +190,14 @@ export default function KpiObjectifsPage() {
             etp:          cell.etp,
             is_nc:        cell.is_nc,
           }
-        }).filter(Boolean)
-      )
+          if (cell.existing_id) row.id = cell.existing_id
+          upserts.push(row)
+        }
+      }
 
       const { error } = await supabase
         .from('kpi_objectives')
-        .upsert(upserts as object[], { onConflict: 'advisor_id,kpi_code,year' })
+        .upsert(upserts, { onConflict: 'advisor_id,kpi_code,year' })
       if (error) { toast.error(t('common.error')); setSaving(false); return }
     }
 
