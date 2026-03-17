@@ -130,9 +130,12 @@ export default function DashboardPage() {
   })
 
   const { data: networkObjectives = [] } = useQuery({
-    queryKey: ['network-objectives'],
+    queryKey: ['network-objectives', currentYear],
     queryFn: async () => {
-      const { data, error } = await supabase.from('network_objectives').select('*')
+      const { data, error } = await supabase
+        .from('network_objectives')
+        .select('*')
+        .eq('year', currentYear)
       if (error) throw error
       return data as NetworkObjectiveRow[]
     },

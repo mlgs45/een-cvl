@@ -208,6 +208,7 @@ export interface Database {
           id: string
           advisor_id: string
           category_id: string
+          year: number
           target_count: number
           is_na: boolean
           period_start: string
@@ -217,12 +218,14 @@ export interface Database {
           id?: string
           advisor_id: string
           category_id: string
+          year: number
           target_count?: number
           is_na?: boolean
           period_start?: string
           period_end?: string
         }
         Update: {
+          year?: number
           target_count?: number
           is_na?: boolean
           period_start?: string

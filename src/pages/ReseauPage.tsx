@@ -97,11 +97,35 @@ export default function ReseauPage() {
   })
 
   // ── Dashboard computation ─────────────────────────────────────────────
+  // Objective effective par (advisor, category) selon le filtre année courant
   const objectiveMap = useMemo(() => {
-    const m = new Map<string, NetworkObjectiveRow>()
-    for (const o of objectives) m.set(`${o.advisor_id}:${o.category_id}`, o)
+    type EffObj = { target_count: number; is_na: boolean }
+    const m = new Map<string, EffObj>()
+
+    if (selectedYear === 'all') {
+      // Agrégation toute la période : somme des targets, N/A si TOUTES les années sont N/A
+      const grouped = new Map<string, NetworkObjectiveRow[]>()
+      for (const o of objectives) {
+        const k = `${o.advisor_id}:${o.category_id}`
+        const arr = grouped.get(k) ?? []
+        arr.push(o)
+        grouped.set(k, arr)
+      }
+      for (const [k, rows] of grouped) {
+        const allNa = rows.every(r => r.is_na)
+        const totalTarget = rows.filter(r => !r.is_na).reduce((s, r) => s + r.target_count, 0)
+        m.set(k, { target_count: totalTarget, is_na: allNa })
+      }
+    } else {
+      // Année spécifique : une seule ligne par (advisor, category)
+      for (const o of objectives) {
+        if (o.year === selectedYear) {
+          m.set(`${o.advisor_id}:${o.category_id}`, { target_count: o.target_count, is_na: o.is_na })
+        }
+      }
+    }
     return m
-  }, [objectives])
+  }, [objectives, selectedYear])
 
   const logCounts = useMemo(() => {
     const m = new Map<string, number>()
