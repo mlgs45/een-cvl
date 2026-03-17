@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import type { ActivityRow, ActivityTypeRow, UserRow, NetworkCategoryRow, NetworkObjectiveRow, NetworkLogRow } from '../types/database'
+import type { ActivityRow, ActivityTypeRow, UserRow, NetworkCategoryRow, NetworkObjectiveRow, NetworkLogRow, KpiTeamObjectiveRow, KpiAutoActualRow, KpiManualLogRow } from '../types/database'
 import { format } from 'date-fns'
 
 const EEN_START = '2025-07-01'
@@ -154,6 +154,42 @@ export default function DashboardPage() {
       return data as NetworkLogRow[]
     },
     enabled: !!currentUser,
+  })
+
+  const { data: kpiTeamObjectives = [] } = useQuery({
+    queryKey: ['kpi-team-objectives-dashboard', currentYear],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('kpi_team_objectives')
+        .select('*')
+        .eq('year', currentYear)
+      if (error) throw error
+      return data as KpiTeamObjectiveRow[]
+    },
+  })
+
+  const { data: kpiAutoActuals = [] } = useQuery({
+    queryKey: ['kpi-auto-actuals-dashboard', currentYear],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('kpi_auto_actuals')
+        .select('*')
+        .eq('year', currentYear)
+      if (error) throw error
+      return data as KpiAutoActualRow[]
+    },
+  })
+
+  const { data: kpiManualLogs = [] } = useQuery({
+    queryKey: ['kpi-manual-logs-dashboard', currentYear],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('kpi_manual_logs')
+        .select('*')
+        .eq('year', currentYear)
+      if (error) throw error
+      return data as KpiManualLogRow[]
+    },
   })
 
     function resetFilters() {
@@ -373,6 +409,87 @@ export default function DashboardPage() {
           currentYear={currentYear}
         />
       )}
+
+      {/* Suivi KPI — carte équipe */}
+      {kpiTeamObjectives.length > 0 && (
+        <KpiCard
+          t={t}
+          teamObjectives={kpiTeamObjectives}
+          autoActuals={kpiAutoActuals}
+          manualLogs={kpiManualLogs}
+          currentYear={currentYear}
+        />
+      )}
+    </div>
+  )
+}
+
+// ── KpiCard component ──────────────────────────────────────────────────────
+const KPI_DEFS_DASHBOARD = [
+  { code: 'KPI1',  label_fr: 'Contact entreprise' },
+  { code: 'KPI2',  label_fr: 'Parcours client' },
+  { code: 'KPI3A', label_fr: 'Impact conseil (AA)' },
+  { code: 'KPI3B', label_fr: 'Accord inter-ent. (PA)' },
+  { code: 'KPI4',  label_fr: 'Enquête impact' },
+  { code: 'KPI5s', label_fr: 'Success stories' },
+  { code: 'KPI5t', label_fr: 'Témoignages' },
+  { code: 'KPI6',  label_fr: 'Contribution EEN' },
+  { code: 'KPI7',  label_fr: 'Identification pb.' },
+]
+
+function KpiCard({ t, teamObjectives, autoActuals, manualLogs, currentYear }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  t: any
+  teamObjectives: KpiTeamObjectiveRow[]
+  autoActuals: KpiAutoActualRow[]
+  manualLogs: KpiManualLogRow[]
+  currentYear: number
+}) {
+  const rows = useMemo(() => KPI_DEFS_DASHBOARD.map(kpi => {
+    const target = Number(teamObjectives.find(o => o.kpi_code === kpi.code)?.target_count ?? 0)
+    const auto   = autoActuals.filter(a => a.kpi_code === kpi.code).reduce((s, a) => s + Number(a.actual), 0)
+    const manual = manualLogs.filter(l => l.kpi_code === kpi.code).length
+    const actual = auto + manual
+    const pct    = target > 0 ? Math.min(100, Math.round(actual / target * 100)) : 0
+    return { kpi, target, actual, pct }
+  }).filter(r => r.target > 0), [teamObjectives, autoActuals, manualLogs])
+
+  if (rows.length === 0) return null
+
+  return (
+    <div className="card overflow-hidden">
+      <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+        <h2 className="text-sm font-medium text-gray-900">
+          {t('kpi.title')} — {currentYear}
+        </h2>
+        <Link to="/kpi" className="text-xs text-primary hover:underline">
+          {t('dashboard.networkCard.viewAll')}
+        </Link>
+      </div>
+      <table className="w-full text-sm">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 w-20">{t('kpi.table.code')}</th>
+            <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">{t('kpi.table.actual')}</th>
+            <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">{t('kpi.table.target')}</th>
+            <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 w-16">{t('kpi.table.rate')}</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100">
+          {rows.map(({ kpi, target, actual, pct }) => (
+            <tr key={kpi.code} className="hover:bg-gray-50">
+              <td className="px-4 py-1.5 font-mono text-xs text-gray-500">{kpi.code}</td>
+              <td className="px-4 py-1.5 text-right font-medium tabular-nums">{actual}</td>
+              <td className="px-4 py-1.5 text-right text-gray-500 tabular-nums">{target}</td>
+              <td className="px-4 py-1.5 text-right">
+                <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-semibold ${
+                  pct >= 80 ? 'text-green-700 bg-green-50' : pct >= 50 ? 'text-amber-700 bg-amber-50' : 'text-red-700 bg-red-50'
+                }`}>{pct}%</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

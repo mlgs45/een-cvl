@@ -57,6 +57,13 @@ function NetworkIcon() {
     </svg>
   )
 }
+function TargetIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+      <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+    </svg>
+  )
+}
 
 export default function Sidebar({ open, onClose }: SidebarProps) {
   const { t } = useTranslation()
@@ -125,6 +132,9 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
             </p>
           </div>
           <div className="space-y-0.5">
+            <NavLink to="/kpi" onClick={onClose} className={navLinkClass}>
+              <TargetIcon />{t('nav.kpi')}
+            </NavLink>
             <NavLink to="/reseau" onClick={onClose} className={navLinkClass}>
               <NetworkIcon />{t('nav.network')}
             </NavLink>

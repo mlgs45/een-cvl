@@ -13,6 +13,7 @@
     "users": "Utilisateurs",
     "activityTypes": "Types d'activités",
     "networkCategories": "Catégories réseau",
+    "kpi": "Suivi KPI",
     "logout": "Déconnexion",
     "profile": "Mon profil"
   },
@@ -219,6 +220,36 @@
       "cancel": "Annuler",
       "saveSuccess": "Objectifs sauvegardés",
       "showInactive": "Afficher conseillers inactifs"
+    }
+  },
+  "kpi": {
+    "title": "Suivi KPI",
+    "addEntry": "Ajouter une entrée",
+    "tabs": {
+      "team": "Vue équipe",
+      "advisor": "Vue par conseiller"
+    },
+    "table": {
+      "code": "Code",
+      "label": "Libellé",
+      "target": "Objectif",
+      "actual": "Réalisé",
+      "rate": "Taux"
+    },
+    "form": {
+      "titleNew": "Nouvelle entrée KPI",
+      "titleEdit": "Modifier l'entrée",
+      "kpi": "KPI",
+      "title": "Titre",
+      "company": "Entreprise liée",
+      "createSuccess": "Entrée ajoutée",
+      "updateSuccess": "Entrée modifiée"
+    },
+    "objectifs": {
+      "title": "Objectifs KPI",
+      "saveSuccess": "Objectifs sauvegardés",
+      "calculateKpi1": "Calculer KPI1 proportionnellement",
+      "calculateKpi1Help": "Répartit l'objectif CCI CVDL par ETP"
     }
   },
   "admin": {

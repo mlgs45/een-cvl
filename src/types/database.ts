@@ -265,7 +265,98 @@ export interface Database {
         Relationships: []
       }
     }
-    Views: Record<string, never>
+      kpi_objectives: {
+        Row: {
+          id: string
+          advisor_id: string
+          kpi_code: string
+          year: number
+          target_count: number
+          etp: number
+          is_nc: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          advisor_id: string
+          kpi_code: string
+          year: number
+          target_count?: number
+          etp?: number
+          is_nc?: boolean
+        }
+        Update: {
+          target_count?: number
+          etp?: number
+          is_nc?: boolean
+        }
+        Relationships: []
+      }
+      kpi_manual_logs: {
+        Row: {
+          id: string
+          advisor_id: string
+          kpi_code: string
+          date: string
+          year: number
+          title: string
+          company_id: string | null
+          comment: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          advisor_id: string
+          kpi_code: string
+          date: string
+          title: string
+          company_id?: string | null
+          comment?: string | null
+          created_by?: string | null
+        }
+        Update: {
+          kpi_code?: string
+          date?: string
+          title?: string
+          company_id?: string | null
+          comment?: string | null
+        }
+        Relationships: []
+      }
+      kpi_team_objectives: {
+        Row: {
+          id: string
+          kpi_code: string
+          year: number
+          target_count: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          kpi_code: string
+          year?: number
+          target_count: number
+        }
+        Update: {
+          target_count?: number
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      kpi_auto_actuals: {
+        Row: {
+          advisor_id: string
+          year: number
+          kpi_code: string
+          actual: number
+        }
+      }
+    }
     Functions: Record<string, never>
     Enums: {
       user_role: 'advisor' | 'admin'
@@ -283,3 +374,7 @@ export type ActivityRow = Database['public']['Tables']['activities']['Row']
 export type NetworkCategoryRow = Database['public']['Tables']['network_activity_categories']['Row']
 export type NetworkObjectiveRow = Database['public']['Tables']['network_objectives']['Row']
 export type NetworkLogRow = Database['public']['Tables']['network_activity_logs']['Row']
+export type KpiObjectiveRow = Database['public']['Tables']['kpi_objectives']['Row']
+export type KpiManualLogRow = Database['public']['Tables']['kpi_manual_logs']['Row']
+export type KpiTeamObjectiveRow = Database['public']['Tables']['kpi_team_objectives']['Row']
+export type KpiAutoActualRow = Database['public']['Views']['kpi_auto_actuals']['Row']

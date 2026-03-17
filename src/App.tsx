@@ -23,6 +23,9 @@ const ReseauObjectifsPage        = lazy(() => import('./pages/ReseauObjectifsPag
 const AdminUsersPage             = lazy(() => import('./pages/admin/AdminUsersPage'))
 const AdminActivityTypesPage     = lazy(() => import('./pages/admin/AdminActivityTypesPage'))
 const AdminNetworkCategoriesPage = lazy(() => import('./pages/admin/AdminNetworkCategoriesPage'))
+const KpiPage                    = lazy(() => import('./pages/KpiPage'))
+const KpiLogFormPage             = lazy(() => import('./pages/KpiLogFormPage'))
+const KpiObjectifsPage           = lazy(() => import('./pages/KpiObjectifsPage'))
 
 export default function App() {
   return (
@@ -43,12 +46,16 @@ export default function App() {
             <Route path="/reseau"               element={<ReseauPage />} />
             <Route path="/reseau/log/new"       element={<ReseauLogFormPage />} />
             <Route path="/reseau/log/:id/edit"  element={<ReseauLogFormPage />} />
+            <Route path="/kpi"                  element={<KpiPage />} />
+            <Route path="/kpi/log/new"          element={<KpiLogFormPage />} />
+            <Route path="/kpi/log/:id/edit"     element={<KpiLogFormPage />} />
             <Route path="/profile"              element={<ProfilePage />} />
             <Route element={<AdminRoute />}>
               <Route path="/admin/users"              element={<AdminUsersPage />} />
               <Route path="/admin/activity-types"     element={<AdminActivityTypesPage />} />
               <Route path="/admin/network-categories" element={<AdminNetworkCategoriesPage />} />
               <Route path="/reseau/objectifs"         element={<ReseauObjectifsPage />} />
+              <Route path="/kpi/objectifs"            element={<KpiObjectifsPage />} />
             </Route>
           </Route>
         </Route>
