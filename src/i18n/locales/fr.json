@@ -330,6 +330,12 @@
     "updatedAt": "Mis à jour le",
     "createdBy": "Créé par"
   },
+  "forcePassword": {
+    "title": "Bienvenue !",
+    "subtitle": "Pour sécuriser votre compte, veuillez définir un nouveau mot de passe personnel avant de continuer.",
+    "hint": "Au moins 8 caractères.",
+    "submit": "Définir mon mot de passe"
+  },
   "profile": {
     "title": "Mon profil",
     "editSection": "Informations personnelles",

@@ -330,6 +330,12 @@
     "updatedAt": "Updated at",
     "createdBy": "Created by"
   },
+  "forcePassword": {
+    "title": "Welcome!",
+    "subtitle": "To secure your account, please set a new personal password before continuing.",
+    "hint": "At least 8 characters.",
+    "submit": "Set my password"
+  },
   "profile": {
     "title": "My profile",
     "editSection": "Personal information",

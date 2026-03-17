@@ -62,7 +62,10 @@ export default function ProfilePage() {
       return
     }
     setSavingPassword(true)
-    const { error } = await supabase.auth.updateUser({ password: newPassword })
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+      data: { must_change_password: false },
+    })
     setSavingPassword(false)
     if (error) {
       toast.error(t('common.error'))

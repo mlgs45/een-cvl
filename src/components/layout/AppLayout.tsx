@@ -2,6 +2,8 @@ import { useState, Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Topbar from './Topbar'
+import ForcePasswordChangeModal from '../ForcePasswordChangeModal'
+import { useAuth } from '../../contexts/AuthContext'
 
 function PageLoader() {
   return (
@@ -13,9 +15,20 @@ function PageLoader() {
 
 export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { user } = useAuth()
+  const [passwordChanged, setPasswordChanged] = useState(false)
+
+  const mustChangePassword =
+    !passwordChanged &&
+    user?.user_metadata?.must_change_password === true
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
+      {/* Modale de changement de mot de passe forcé */}
+      {mustChangePassword && (
+        <ForcePasswordChangeModal onDone={() => setPasswordChanged(true)} />
+      )}
+
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
