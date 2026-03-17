@@ -14,6 +14,11 @@ export default function ProfilePage() {
   const [organisation, setOrganisation] = useState('')
   const [saving, setSaving] = useState(false)
 
+  // Password change state
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [savingPassword, setSavingPassword] = useState(false)
+
   // Initialiser le formulaire dès que le profil est chargé
   useEffect(() => {
     if (profile) {
@@ -43,6 +48,28 @@ export default function ProfilePage() {
       queryClient.invalidateQueries({ queryKey: ['admin-users'] })
       // Recharger pour mettre à jour l'AuthContext (profil en mémoire)
       window.location.reload()
+    }
+  }
+
+  async function handlePasswordChange(e: FormEvent) {
+    e.preventDefault()
+    if (newPassword.length < 8) {
+      toast.error(t('profile.passwordTooShort'))
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error(t('profile.passwordMismatch'))
+      return
+    }
+    setSavingPassword(true)
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
+    setSavingPassword(false)
+    if (error) {
+      toast.error(t('common.error'))
+    } else {
+      toast.success(t('profile.changePasswordSuccess'))
+      setNewPassword('')
+      setConfirmPassword('')
     }
   }
 
@@ -129,6 +156,51 @@ export default function ProfilePage() {
               disabled={saving || !fullName.trim()}
             >
               {saving ? t('profile.saving') : t('profile.save')}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Changer le mot de passe */}
+      <div className="card p-6">
+        <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">
+          {t('profile.changePassword')}
+        </h2>
+
+        <form onSubmit={handlePasswordChange} className="space-y-4">
+          <div>
+            <label className="label">{t('profile.newPassword')} *</label>
+            <input
+              type="password"
+              className="input"
+              value={newPassword}
+              onChange={e => setNewPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+              minLength={8}
+            />
+          </div>
+
+          <div>
+            <label className="label">{t('profile.confirmPassword')} *</label>
+            <input
+              type="password"
+              className="input"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+              minLength={8}
+            />
+          </div>
+
+          <div className="pt-2">
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={savingPassword || !newPassword || !confirmPassword}
+            >
+              {savingPassword ? t('profile.saving') : t('profile.changePasswordSave')}
             </button>
           </div>
         </form>

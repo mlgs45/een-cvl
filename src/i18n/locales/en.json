@@ -339,6 +339,13 @@
     "organisation": "Organisation",
     "save": "Save changes",
     "saving": "Saving…",
-    "updateSuccess": "Profile updated"
+    "updateSuccess": "Profile updated",
+    "changePassword": "Change password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "changePasswordSave": "Update password",
+    "changePasswordSuccess": "Password updated",
+    "passwordMismatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 8 characters"
   }
 }
