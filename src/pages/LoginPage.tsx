@@ -33,12 +33,16 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center mx-auto mb-3">
-            <span className="text-white font-bold text-lg">EEN</span>
+        <div className="flex flex-col items-center mb-8">
+          <div className="bg-sidebar rounded-2xl px-6 py-4 mb-4 shadow-card">
+            <img
+              src="/een-logo-eu.svg"
+              alt="Enterprise Europe Network"
+              className="w-48 h-auto object-contain"
+              draggable={false}
+            />
           </div>
-          <h1 className="text-xl font-semibold text-gray-900">{t('app.name')}</h1>
-          <p className="text-sm text-gray-500 mt-1">{t('app.tagline')}</p>
+          <p className="text-sm text-gray-500">{t('app.tagline')}</p>
         </div>
 
         <div className="card p-6 shadow-sm">

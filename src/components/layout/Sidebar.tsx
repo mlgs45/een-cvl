@@ -82,7 +82,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
       {/* Logo officiel EEN */}
       <div className="flex flex-col items-center justify-center px-4 py-4 border-b border-sidebar-border shrink-0 gap-2">
         <img
-          src="/een-logo.png"
+          src="/een-logo-eu.svg"
           alt="Enterprise Europe Network"
           className="w-44 h-auto object-contain"
           draggable={false}
