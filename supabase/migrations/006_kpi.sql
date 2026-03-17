@@ -83,15 +83,15 @@ GRANT SELECT ON public.kpi_auto_actuals TO authenticated;
 -- 6. Triggers updated_at
 CREATE OR REPLACE TRIGGER kpi_objectives_updated_at
   BEFORE UPDATE ON public.kpi_objectives
-  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE OR REPLACE TRIGGER kpi_manual_logs_updated_at
   BEFORE UPDATE ON public.kpi_manual_logs
-  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE OR REPLACE TRIGGER kpi_team_objectives_updated_at
   BEFORE UPDATE ON public.kpi_team_objectives
-  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- 7. RLS
 ALTER TABLE public.kpi_objectives       ENABLE ROW LEVEL SECURITY;
