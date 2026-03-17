@@ -29,11 +29,11 @@ export default function CompanyDetailPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('companies')
-        .select(`*, users!companies_een_contact_id_fkey ( full_name )`)
+        .select(`*, een_contact:users!een_contact_id ( full_name )`)
         .eq('id', id!)
         .single()
       if (error) throw error
-      return data as CompanyRow & { users: { full_name: string } | null }
+      return data as CompanyRow & { een_contact: { full_name: string } | null }
     },
     enabled: !!id,
   })
@@ -183,7 +183,7 @@ export default function CompanyDetailPage() {
             {company.een_contact_id && (
               <>
                 <dt className="text-gray-500">{t('companies.form.eenContact')}</dt>
-                <dd className="text-gray-900">{(company as any).users?.full_name ?? '—'}</dd>
+                <dd className="text-gray-900">{(company as any).een_contact?.full_name ?? '—'}</dd>
               </>
             )}
           </dl>
