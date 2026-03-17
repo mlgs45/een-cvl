@@ -48,6 +48,15 @@ function TagIcon() {
     </svg>
   )
 }
+function NetworkIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+      <circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/>
+      <line x1="12" y1="7" x2="5" y2="17"/><line x1="12" y1="7" x2="19" y2="17"/>
+      <line x1="5" y1="19" x2="19" y2="19"/>
+    </svg>
+  )
+}
 
 export default function Sidebar({ open, onClose }: SidebarProps) {
   const { t } = useTranslation()
@@ -56,11 +65,13 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
   const mainItems: NavItem[] = [
     { label: t('nav.dashboard'), to: '/dashboard', icon: <LayoutIcon /> },
     { label: t('nav.companies'), to: '/companies', icon: <BuildingIcon /> },
+    { label: t('nav.network'), to: '/reseau', icon: <NetworkIcon /> },
   ]
 
   const adminItems: NavItem[] = [
     { label: t('nav.users'), to: '/admin/users', icon: <UsersIcon /> },
     { label: t('nav.activityTypes'), to: '/admin/activity-types', icon: <TagIcon /> },
+    { label: t('nav.networkCategories'), to: '/admin/network-categories', icon: <NetworkIcon /> },
   ]
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>

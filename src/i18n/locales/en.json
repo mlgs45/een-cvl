@@ -7,9 +7,11 @@
     "dashboard": "Dashboard",
     "companies": "Companies",
     "activities": "Activities",
+    "network": "Network Life",
     "admin": "Administration",
     "users": "Users",
     "activityTypes": "Activity Types",
+    "networkCategories": "Network Categories",
     "logout": "Logout",
     "profile": "My profile"
   },
@@ -30,6 +32,11 @@
     "totalActivities": "Logged Activities",
     "activitiesByType": "Activities by Type",
     "activitiesByAdvisor": "Activities by Advisor",
+    "networkCard": {
+      "title": "Network Life",
+      "subtitle": "My progress {{year}}",
+      "viewAll": "See all"
+    },
     "filters": {
       "dateRange": "Date Range",
       "advisor": "Advisor",
@@ -92,12 +99,7 @@
     },
     "importPage": {
       "title": "Import Companies",
-      "steps": {
-        "upload": "File",
-        "mapping": "Columns",
-        "preview": "Preview",
-        "result": "Result"
-      },
+      "steps": { "upload": "File", "mapping": "Columns", "preview": "Preview", "result": "Result" },
       "upload": {
         "dropzone": "Drop a CSV or Excel file here",
         "or": "or",
@@ -165,6 +167,59 @@
       "confirmDelete": "Delete this activity?"
     }
   },
+  "network": {
+    "title": "Network Life",
+    "tabs": { "dashboard": "Dashboard", "log": "Activity Log" },
+    "years": { "all": "Full period" },
+    "showInactive": "Show inactive advisors",
+    "addEntry": "Add entry",
+    "dashboard": {
+      "na": "N/A",
+      "noObjectives": "No objectives defined"
+    },
+    "log": {
+      "date": "Date",
+      "advisor": "Advisor",
+      "category": "Category",
+      "name": "Name",
+      "comment": "Comment",
+      "noEntries": "No entries",
+      "confirmDelete": "Delete this entry?"
+    },
+    "filters": {
+      "year": "Year",
+      "category": "Category",
+      "advisor": "Advisor",
+      "all": "All"
+    },
+    "form": {
+      "titleNew": "New network entry",
+      "titleEdit": "Edit entry",
+      "date": "Date",
+      "category": "Category",
+      "selectCategory": "Select a category",
+      "name": "Name",
+      "namePlaceholder": "E.g.: EEN Innovation Webinar, LinkedIn Article…",
+      "advisor": "Advisor",
+      "comment": "Comment",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "createSuccess": "Entry added",
+      "updateSuccess": "Entry updated",
+      "deleteSuccess": "Entry deleted"
+    },
+    "objectifs": {
+      "title": "Objectives per advisor",
+      "periodStart": "Period start",
+      "periodEnd": "Period end",
+      "applyAll": "Apply to all",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saveSuccess": "Objectives saved",
+      "showInactive": "Show inactive advisors"
+    }
+  },
   "admin": {
     "title": "Administration",
     "users": {
@@ -173,12 +228,10 @@
       "email": "Email",
       "organisation": "Organisation",
       "role": "Role",
-      "roles": {
-        "advisor": "Advisor",
-        "admin": "Administrator"
-      },
+      "active": "Active",
+      "roles": { "advisor": "Advisor", "admin": "Administrator" },
       "changeRole": "Change role",
-      "updateSuccess": "Role updated",
+      "updateSuccess": "User updated",
       "you": "you",
       "invite": {
         "button": "New user",
@@ -212,6 +265,19 @@
       "createSuccess": "Type created",
       "updateSuccess": "Type updated",
       "deleteSuccess": "Type deleted"
+    },
+    "networkCategories": {
+      "title": "Network Categories",
+      "addCategory": "Add category",
+      "labelFr": "FR Label",
+      "labelEn": "EN Label",
+      "code": "Code",
+      "active": "Active",
+      "save": "Save",
+      "cancel": "Cancel",
+      "createSuccess": "Category created",
+      "updateSuccess": "Category updated",
+      "deleteSuccess": "Category deleted"
     }
   },
   "common": {

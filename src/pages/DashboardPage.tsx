@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
-import type { ActivityRow, ActivityTypeRow, UserRow } from '../types/database'
+import { useAuth } from '../contexts/AuthContext'
+import type { ActivityRow, ActivityTypeRow, UserRow, NetworkCategoryRow, NetworkObjectiveRow, NetworkLogRow } from '../types/database'
 import { format } from 'date-fns'
 
 const EEN_START = '2025-07-01'
@@ -110,7 +112,48 @@ export default function DashboardPage() {
     return Array.from(map.values()).sort((a, b) => b.count - a.count)
   }, [filtered])
 
-  function resetFilters() {
+  const { user: currentUser } = useAuth()
+
+  const currentYear = new Date().getFullYear()
+
+  const { data: networkCategories = [] } = useQuery({
+    queryKey: ['network-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('network_activity_categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order')
+      if (error) throw error
+      return data as NetworkCategoryRow[]
+    },
+  })
+
+  const { data: networkObjectives = [] } = useQuery({
+    queryKey: ['network-objectives'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('network_objectives').select('*')
+      if (error) throw error
+      return data as NetworkObjectiveRow[]
+    },
+  })
+
+  const { data: networkLogs = [] } = useQuery({
+    queryKey: ['network-logs-dashboard', currentYear],
+    queryFn: async () => {
+      if (!currentUser) return []
+      const { data, error } = await supabase
+        .from('network_activity_logs')
+        .select('*')
+        .eq('advisor_id', currentUser.id)
+        .eq('year', currentYear)
+      if (error) throw error
+      return data as NetworkLogRow[]
+    },
+    enabled: !!currentUser,
+  })
+
+    function resetFilters() {
     setDateFrom(EEN_START)
     setDateTo(EEN_END)
     setFilterAdvisor('')
@@ -314,6 +357,86 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* Vie du réseau — carte personnelle */}
+      {networkCategories.length > 0 && (
+        <NetworkCard
+          t={t}
+          lang={lang}
+          categories={networkCategories}
+          objectives={networkObjectives}
+          logs={networkLogs}
+          currentUserId={currentUser?.id ?? ''}
+          currentYear={currentYear}
+        />
+      )}
+    </div>
+  )
+}
+
+// ── NetworkCard component ──────────────────────────────────────────────────
+function NetworkCard({ t, lang, categories, objectives, logs, currentUserId, currentYear }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  t: any
+  lang: 'fr' | 'en'
+  categories: NetworkCategoryRow[]
+  objectives: NetworkObjectiveRow[]
+  logs: NetworkLogRow[]
+  currentUserId: string
+  currentYear: number
+}) {
+  const myObjectives = useMemo(
+    () => objectives.filter(o => o.advisor_id === currentUserId),
+    [objectives, currentUserId]
+  )
+  const myLogs = useMemo(
+    () => logs.filter(l => l.advisor_id === currentUserId),
+    [logs, currentUserId]
+  )
+
+  const rows = useMemo(() => categories.map(cat => {
+    const obj = myObjectives.find(o => o.category_id === cat.id)
+    const actual = myLogs.filter(l => l.category_id === cat.id).length
+    const target = obj?.target_count ?? 0
+    const isNa = obj?.is_na ?? false
+    const pct = target > 0 ? Math.min(100, Math.round(actual / target * 100)) : 0
+    return { cat, actual, target, isNa, pct }
+  }), [categories, myObjectives, myLogs])
+
+  if (!rows.some(r => !r.isNa && r.target > 0)) return null
+
+  return (
+    <div className="card overflow-hidden">
+      <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+        <h2 className="text-sm font-medium text-gray-900">
+          {t('dashboard.networkCard.title')} — {t('dashboard.networkCard.subtitle', { year: currentYear })}
+        </h2>
+        <Link to="/reseau" className="text-xs text-primary hover:underline">
+          {t('dashboard.networkCard.viewAll')}
+        </Link>
+      </div>
+      <div className="p-4 space-y-3">
+        {rows.filter(r => !r.isNa && r.target > 0).map(({ cat, actual, target, pct }) => (
+          <div key={cat.id}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-gray-600 truncate">
+                {lang === 'fr' ? cat.label_fr : cat.label_en}
+              </span>
+              <span className="text-xs font-medium text-gray-700 tabular-nums ml-2">
+                {actual} / {target}
+              </span>
+            </div>
+            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all ${
+                  pct >= 80 ? 'bg-green-500' : pct >= 50 ? 'bg-amber-400' : 'bg-red-400'
+                }`}
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

@@ -47,16 +47,18 @@ export default function AdminUsersPage() {
   })
 
   async function handleRoleChange(userId: string, role: UserRole) {
-    const { error } = await supabase
-      .from('users')
-      .update({ role })
-      .eq('id', userId)
-    if (error) {
-      toast.error(t('common.error'))
-    } else {
-      toast.success(t('admin.users.updateSuccess'))
-      queryClient.invalidateQueries({ queryKey: ['admin-users'] })
-    }
+    const { error } = await supabase.from('users').update({ role }).eq('id', userId)
+    if (error) { toast.error(t('common.error')); return }
+    toast.success(t('admin.users.updateSuccess'))
+    queryClient.invalidateQueries({ queryKey: ['admin-users'] })
+  }
+
+  async function handleActiveToggle(userId: string, is_active: boolean) {
+    const { error } = await supabase.from('users').update({ is_active }).eq('id', userId)
+    if (error) { toast.error(t('common.error')); return }
+    toast.success(t('admin.users.updateSuccess'))
+    queryClient.invalidateQueries({ queryKey: ['admin-users'] })
+    queryClient.invalidateQueries({ queryKey: ['advisors'] })
   }
 
   async function handleInvite(e: FormEvent) {
@@ -87,7 +89,6 @@ export default function AdminUsersPage() {
 
     if (error || data?.error) {
       const msg = data?.error ?? error?.message ?? t('common.error')
-      // Messages d'erreur Supabase courants → traduction lisible
       if (msg.includes('already registered')) {
         toast.error(t('admin.users.invite.alreadyExists'))
       } else {
@@ -113,10 +114,7 @@ export default function AdminUsersPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-gray-900">{t('admin.users.title')}</h1>
-        <button
-          className="btn-primary"
-          onClick={() => setShowInviteModal(true)}
-        >
+        <button className="btn-primary" onClick={() => setShowInviteModal(true)}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
@@ -124,7 +122,7 @@ export default function AdminUsersPage() {
         </button>
       </div>
 
-      {/* Liste des utilisateurs */}
+      {/* Liste */}
       <div className="card overflow-hidden">
         {isLoading ? (
           <div className="divide-y divide-gray-100">
@@ -144,11 +142,12 @@ export default function AdminUsersPage() {
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500">{t('admin.users.fullName')}</th>
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 hidden sm:table-cell">{t('admin.users.organisation')}</th>
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500">{t('admin.users.role')}</th>
+                <th className="px-4 py-2.5 text-center text-xs font-medium text-gray-500">{t('admin.users.active')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {users.map(u => (
-                <tr key={u.id} className="hover:bg-gray-50">
+                <tr key={u.id} className={`hover:bg-gray-50 ${!u.is_active ? 'opacity-50' : ''}`}>
                   <td className="px-4 py-3">
                     <div className="font-medium text-gray-900">{u.full_name}</div>
                     {u.id === currentUser?.id && (
@@ -167,6 +166,16 @@ export default function AdminUsersPage() {
                       <option value="admin">{t('admin.users.roles.admin')}</option>
                     </select>
                   </td>
+                  <td className="px-4 py-3 text-center">
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4 accent-primary"
+                      checked={u.is_active}
+                      disabled={u.id === currentUser?.id}
+                      onChange={e => handleActiveToggle(u.id, e.target.checked)}
+                      title={t('admin.users.active')}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -178,91 +187,46 @@ export default function AdminUsersPage() {
       {showInviteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
-            {/* Header modale */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
               <h2 className="font-semibold text-gray-900">{t('admin.users.invite.title')}</h2>
-              <button
-                onClick={closeModal}
-                className="p-1 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100"
-              >
+              <button onClick={closeModal} className="p-1 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
               </button>
             </div>
-
-            {/* Formulaire */}
             <form onSubmit={handleInvite} className="px-6 py-5 space-y-4">
-              {/* Nom complet */}
               <div>
                 <label className="label">{t('admin.users.invite.fullName')} *</label>
-                <input
-                  type="text"
-                  className="input"
-                  placeholder="Prénom Nom"
-                  value={form.full_name}
-                  onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))}
-                  required
-                  autoFocus
-                />
+                <input type="text" className="input" placeholder="Prénom Nom" value={form.full_name}
+                  onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} required autoFocus />
               </div>
-
-              {/* Email */}
               <div>
                 <label className="label">{t('admin.users.invite.email')} *</label>
-                <input
-                  type="email"
-                  className="input"
-                  placeholder="prenom.nom@example.com"
-                  value={form.email}
-                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                  required
-                />
+                <input type="email" className="input" placeholder="prenom.nom@example.com" value={form.email}
+                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
               </div>
-
-              {/* Organisation */}
               <div>
                 <label className="label">{t('admin.users.invite.organisation')}</label>
-                <input
-                  type="text"
-                  className="input"
-                  value={form.organisation}
-                  onChange={e => setForm(f => ({ ...f, organisation: e.target.value }))}
-                />
+                <input type="text" className="input" value={form.organisation}
+                  onChange={e => setForm(f => ({ ...f, organisation: e.target.value }))} />
               </div>
-
-              {/* Rôle */}
               <div>
                 <label className="label">{t('admin.users.invite.role')}</label>
-                <select
-                  className="input"
-                  value={form.role}
-                  onChange={e => setForm(f => ({ ...f, role: e.target.value as UserRole }))}
-                >
+                <select className="input" value={form.role}
+                  onChange={e => setForm(f => ({ ...f, role: e.target.value as UserRole }))}>
                   <option value="advisor">{t('admin.users.roles.advisor')}</option>
                   <option value="admin">{t('admin.users.roles.admin')}</option>
                 </select>
               </div>
-
-              {/* Mot de passe temporaire */}
               <div>
                 <label className="label">{t('admin.users.invite.password')} *</label>
                 <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    className="input pr-10"
-                    placeholder="8 caractères minimum"
-                    value={form.password}
-                    onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                    required
-                    minLength={8}
-                  />
-                  <button
-                    type="button"
-                    tabIndex={-1}
-                    onClick={() => setShowPassword(v => !v)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
-                  >
+                  <input type={showPassword ? 'text' : 'password'} className="input pr-10"
+                    placeholder="8 caractères minimum" value={form.password}
+                    onChange={e => setForm(f => ({ ...f, password: e.target.value }))} required minLength={8} />
+                  <button type="button" tabIndex={-1} onClick={() => setShowPassword(v => !v)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700">
                     {showPassword ? (
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
@@ -279,21 +243,12 @@ export default function AdminUsersPage() {
                 </div>
                 <p className="text-xs text-gray-400 mt-1">{t('admin.users.invite.passwordHint')}</p>
               </div>
-
-              {/* Confirmation mot de passe */}
               <div>
                 <label className="label">{t('admin.users.invite.confirmPassword')} *</label>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  className="input"
-                  placeholder="Répéter le mot de passe"
-                  value={form.confirmPassword}
-                  onChange={e => setForm(f => ({ ...f, confirmPassword: e.target.value }))}
-                  required
-                />
+                <input type={showPassword ? 'text' : 'password'} className="input"
+                  placeholder="Répéter le mot de passe" value={form.confirmPassword}
+                  onChange={e => setForm(f => ({ ...f, confirmPassword: e.target.value }))} required />
               </div>
-
-              {/* Actions */}
               <div className="flex gap-3 pt-2">
                 <button type="submit" className="btn-primary flex-1 justify-center" disabled={inviting}>
                   {inviting ? t('admin.users.invite.creating') : t('admin.users.invite.create')}

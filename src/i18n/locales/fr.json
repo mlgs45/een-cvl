@@ -7,9 +7,11 @@
     "dashboard": "Tableau de bord",
     "companies": "Entreprises",
     "activities": "Activités",
+    "network": "Vie du réseau",
     "admin": "Administration",
     "users": "Utilisateurs",
     "activityTypes": "Types d'activités",
+    "networkCategories": "Catégories réseau",
     "logout": "Déconnexion",
     "profile": "Mon profil"
   },
@@ -30,6 +32,11 @@
     "totalActivities": "Activités enregistrées",
     "activitiesByType": "Activités par type",
     "activitiesByAdvisor": "Activités par conseiller",
+    "networkCard": {
+      "title": "Vie du réseau",
+      "subtitle": "Ma progression {{year}}",
+      "viewAll": "Voir tout"
+    },
     "filters": {
       "dateRange": "Période",
       "advisor": "Conseiller",
@@ -92,12 +99,7 @@
     },
     "importPage": {
       "title": "Importer des entreprises",
-      "steps": {
-        "upload": "Fichier",
-        "mapping": "Colonnes",
-        "preview": "Aperçu",
-        "result": "Résultat"
-      },
+      "steps": { "upload": "Fichier", "mapping": "Colonnes", "preview": "Aperçu", "result": "Résultat" },
       "upload": {
         "dropzone": "Glissez un fichier CSV ou Excel ici",
         "or": "ou",
@@ -165,6 +167,59 @@
       "confirmDelete": "Supprimer cette activité ?"
     }
   },
+  "network": {
+    "title": "Vie du réseau",
+    "tabs": { "dashboard": "Tableau de bord", "log": "Journal" },
+    "years": { "all": "Toute la période" },
+    "showInactive": "Afficher conseillers inactifs",
+    "addEntry": "Ajouter une entrée",
+    "dashboard": {
+      "na": "N/A",
+      "noObjectives": "Aucun objectif défini"
+    },
+    "log": {
+      "date": "Date",
+      "advisor": "Conseiller",
+      "category": "Catégorie",
+      "name": "Nom",
+      "comment": "Commentaire",
+      "noEntries": "Aucune entrée",
+      "confirmDelete": "Supprimer cette entrée ?"
+    },
+    "filters": {
+      "year": "Année",
+      "category": "Catégorie",
+      "advisor": "Conseiller",
+      "all": "Tous"
+    },
+    "form": {
+      "titleNew": "Nouvelle entrée réseau",
+      "titleEdit": "Modifier l'entrée",
+      "date": "Date",
+      "category": "Catégorie",
+      "selectCategory": "Sélectionner une catégorie",
+      "name": "Nom",
+      "namePlaceholder": "Ex : Webinaire EEN Innovation, Article LinkedIn…",
+      "advisor": "Conseiller",
+      "comment": "Commentaire",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "cancel": "Annuler",
+      "createSuccess": "Entrée ajoutée",
+      "updateSuccess": "Entrée modifiée",
+      "deleteSuccess": "Entrée supprimée"
+    },
+    "objectifs": {
+      "title": "Objectifs par conseiller",
+      "periodStart": "Début de période",
+      "periodEnd": "Fin de période",
+      "applyAll": "Appliquer à tous",
+      "save": "Sauvegarder",
+      "cancel": "Annuler",
+      "saveSuccess": "Objectifs sauvegardés",
+      "showInactive": "Afficher conseillers inactifs"
+    }
+  },
   "admin": {
     "title": "Administration",
     "users": {
@@ -173,12 +228,10 @@
       "email": "Email",
       "organisation": "Organisation",
       "role": "Rôle",
-      "roles": {
-        "advisor": "Conseiller",
-        "admin": "Administrateur"
-      },
+      "active": "Actif",
+      "roles": { "advisor": "Conseiller", "admin": "Administrateur" },
       "changeRole": "Changer le rôle",
-      "updateSuccess": "Rôle mis à jour",
+      "updateSuccess": "Utilisateur mis à jour",
       "you": "vous",
       "invite": {
         "button": "Nouvel utilisateur",
@@ -212,6 +265,19 @@
       "createSuccess": "Type créé",
       "updateSuccess": "Type mis à jour",
       "deleteSuccess": "Type supprimé"
+    },
+    "networkCategories": {
+      "title": "Catégories réseau",
+      "addCategory": "Ajouter une catégorie",
+      "labelFr": "Libellé FR",
+      "labelEn": "Libellé EN",
+      "code": "Code",
+      "active": "Actif",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "createSuccess": "Catégorie créée",
+      "updateSuccess": "Catégorie mise à jour",
+      "deleteSuccess": "Catégorie supprimée"
     }
   },
   "common": {
