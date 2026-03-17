@@ -62,12 +62,6 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
   const { t } = useTranslation()
   const { isAdmin } = useAuth()
 
-  const mainItems: NavItem[] = [
-    { label: t('nav.dashboard'), to: '/dashboard', icon: <LayoutIcon /> },
-    { label: t('nav.companies'), to: '/companies', icon: <BuildingIcon /> },
-    { label: t('nav.network'), to: '/reseau', icon: <NetworkIcon /> },
-  ]
-
   const adminItems: NavItem[] = [
     { label: t('nav.users'), to: '/admin/users', icon: <UsersIcon /> },
     { label: t('nav.activityTypes'), to: '/admin/activity-types', icon: <TagIcon /> },
@@ -104,29 +98,56 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
       </div>
 
       {/* Nav principale */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-0.5">
-        {mainItems.map(item => (
-          <NavLink key={item.to} to={item.to} onClick={onClose} className={navLinkClass}>
-            {item.icon}
-            {item.label}
-          </NavLink>
-        ))}
+      <nav className="flex-1 px-3 py-4 overflow-y-auto">
 
-        {/* Section admin */}
+        {/* Section Entreprises */}
+        <div className="mb-1">
+          <div className="pb-1.5 px-3">
+            <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#5a9ab8' }}>
+              {t('nav.companies')}
+            </p>
+          </div>
+          <div className="space-y-0.5">
+            <NavLink to="/dashboard" onClick={onClose} className={navLinkClass}>
+              <LayoutIcon />{t('nav.dashboard')}
+            </NavLink>
+            <NavLink to="/companies" onClick={onClose} className={navLinkClass}>
+              <BuildingIcon />{t('nav.companies')}
+            </NavLink>
+          </div>
+        </div>
+
+        {/* Section KPI et vie du réseau */}
+        <div className="mt-4 mb-1">
+          <div className="pb-1.5 px-3">
+            <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#5a9ab8' }}>
+              {t('nav.networkSection')}
+            </p>
+          </div>
+          <div className="space-y-0.5">
+            <NavLink to="/reseau" onClick={onClose} className={navLinkClass}>
+              <NetworkIcon />{t('nav.network')}
+            </NavLink>
+          </div>
+        </div>
+
+        {/* Section Administration */}
         {isAdmin && (
-          <>
-            <div className="pt-4 pb-1.5 px-3">
+          <div className="mt-4 mb-1">
+            <div className="pb-1.5 px-3">
               <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#5a9ab8' }}>
                 {t('nav.admin')}
               </p>
             </div>
-            {adminItems.map(item => (
-              <NavLink key={item.to} to={item.to} onClick={onClose} className={navLinkClass}>
-                {item.icon}
-                {item.label}
-              </NavLink>
-            ))}
-          </>
+            <div className="space-y-0.5">
+              {adminItems.map(item => (
+                <NavLink key={item.to} to={item.to} onClick={onClose} className={navLinkClass}>
+                  {item.icon}
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
+          </div>
         )}
       </nav>
 
