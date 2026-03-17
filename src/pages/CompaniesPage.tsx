@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
@@ -14,6 +14,7 @@ interface CompanyWithMeta extends CompanyRow {
 
 export default function CompaniesPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [filterAdvisor, setFilterAdvisor] = useState('')
 
@@ -183,11 +184,13 @@ export default function CompaniesPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filtered.map(company => (
-                  <tr key={company.id} className="hover:bg-gray-50 cursor-pointer">
+                  <tr key={company.id} className="hover:bg-gray-50 cursor-pointer"
+                    onClick={() => navigate(`/companies/${company.id}`)}>
                     <td className="px-4 py-3">
                       <Link
                         to={`/companies/${company.id}`}
                         className="font-medium text-gray-900 hover:text-primary"
+                        onClick={e => e.stopPropagation()}
                       >
                         {company.name}
                       </Link>
