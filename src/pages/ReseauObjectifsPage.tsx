@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
@@ -152,6 +152,20 @@ export default function ReseauObjectifsPage() {
     setDirty(false)
   }
 
+  const categoryTargetTotals = useMemo(() => {
+    const m = new Map<string, number>()
+    for (const cat of categories) {
+      let total = 0
+      for (const advisor of advisors) {
+        const cell = grid[`${advisor.id}:${cat.id}`]
+        if (!cell || cell.is_na) continue
+        total += cell.target_count
+      }
+      m.set(cat.id, total)
+    }
+    return m
+  }, [grid, categories, advisors])
+
   return (
     <div className="max-w-6xl mx-auto space-y-4">
       <div className="flex items-center gap-2 mb-6">
@@ -245,6 +259,21 @@ export default function ReseauObjectifsPage() {
                   })}
                 </tr>
               ))}
+              {advisors.length > 0 && (
+                <tr className="bg-gray-50 border-t-2 border-gray-200">
+                  <td className="px-4 py-3 font-semibold text-gray-700 whitespace-nowrap">
+                    Total
+                  </td>
+                  {categories.map(cat => {
+                    const total = categoryTargetTotals.get(cat.id) ?? 0
+                    return (
+                      <td key={cat.id} className="px-2 py-3 text-center">
+                        <span className="text-sm font-semibold text-gray-700">{total > 0 ? total : '—'}</span>
+                      </td>
+                    )
+                  })}
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

@@ -112,6 +112,23 @@ export default function ReseauPage() {
     return m
   }, [logs])
 
+  const categoryTotals = useMemo(() => {
+    const m = new Map<string, { actual: number; target: number }>()
+    for (const cat of categories) {
+      let totalActual = 0
+      let totalTarget = 0
+      for (const advisor of advisors) {
+        const key = `${advisor.id}:${cat.id}`
+        const objective = objectiveMap.get(key)
+        if (!objective || objective.is_na) continue
+        totalActual += logCounts.get(key) ?? 0
+        totalTarget += objective.target_count ?? 0
+      }
+      m.set(cat.id, { actual: totalActual, target: totalTarget })
+    }
+    return m
+  }, [categories, advisors, objectiveMap, logCounts])
+
   // ── Journal filtered ──────────────────────────────────────────────────
   const filteredLogs = useMemo(() => {
     return logs.filter(l => {
@@ -289,6 +306,29 @@ export default function ReseauPage() {
                     })}
                   </tr>
                 ))}
+                {advisors.length > 0 && (
+                  <tr className="bg-gray-50 border-t-2 border-gray-200">
+                    <td className="px-4 py-3 font-semibold text-gray-700 whitespace-nowrap">
+                      Total CCIR
+                    </td>
+                    {categories.map(cat => {
+                      const totals = categoryTotals.get(cat.id) ?? { actual: 0, target: 0 }
+                      const pct = totals.target > 0 ? Math.round(totals.actual / totals.target * 100) : null
+                      return (
+                        <td key={cat.id} className="px-3 py-3 text-center">
+                          {totals.target === 0 ? (
+                            <span className="text-gray-300 text-xs">—</span>
+                          ) : (
+                            <span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${cellClass(totals.actual, totals.target, false)}`}>
+                              {totals.actual} / {totals.target}
+                              {pct !== null && <span className="ml-1 opacity-70">({pct}%)</span>}
+                            </span>
+                          )}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
