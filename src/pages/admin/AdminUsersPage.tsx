@@ -75,15 +75,17 @@ export default function AdminUsersPage() {
 
     setInviting(true)
 
-    // S'assurer que la session est valide avant l'appel
+    // Récupérer un token frais et le passer explicitement
     const { data: sessionData, error: sessionError } = await supabase.auth.refreshSession()
-    if (sessionError || !sessionData.session) {
+    const accessToken = sessionData?.session?.access_token
+    if (sessionError || !accessToken) {
       setInviting(false)
       toast.error(t('common.sessionExpired'))
       return
     }
 
     const { data, error } = await supabase.functions.invoke('invite-user', {
+      headers: { Authorization: `Bearer ${accessToken}` },
       body: {
         email: form.email,
         password: form.password,
