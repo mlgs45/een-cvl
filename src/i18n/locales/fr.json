@@ -315,6 +315,7 @@
   "common": {
     "loading": "Chargement…",
     "error": "Une erreur est survenue",
+    "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
     "save": "Enregistrer",
     "cancel": "Annuler",
     "delete": "Supprimer",

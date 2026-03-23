@@ -75,6 +75,14 @@ export default function AdminUsersPage() {
 
     setInviting(true)
 
+    // S'assurer que la session est valide avant l'appel
+    const { data: sessionData, error: sessionError } = await supabase.auth.refreshSession()
+    if (sessionError || !sessionData.session) {
+      setInviting(false)
+      toast.error(t('common.sessionExpired'))
+      return
+    }
+
     const { data, error } = await supabase.functions.invoke('invite-user', {
       body: {
         email: form.email,
@@ -91,6 +99,8 @@ export default function AdminUsersPage() {
       const msg = data?.error ?? error?.message ?? t('common.error')
       if (msg.includes('already registered')) {
         toast.error(t('admin.users.invite.alreadyExists'))
+      } else if (msg.toLowerCase().includes('unauthorized') || msg.includes('401')) {
+        toast.error(t('common.sessionExpired'))
       } else {
         toast.error(msg)
       }

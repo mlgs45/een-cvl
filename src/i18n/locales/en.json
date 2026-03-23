@@ -315,6 +315,7 @@
   "common": {
     "loading": "Loading…",
     "error": "An error occurred",
+    "sessionExpired": "Your session has expired. Please log in again.",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
