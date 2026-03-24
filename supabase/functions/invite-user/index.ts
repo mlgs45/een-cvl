@@ -1,4 +1,4 @@
-// Aucune dépendance externe — fetch natif Deno uniquement
+// Aucune dépendance externe — appels directs aux services Docker internes
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,8 +11,10 @@ Deno.serve(async (req) => {
     return new Response('ok', { headers: corsHeaders })
   }
 
-  const SUPABASE_URL            = Deno.env.get('SUPABASE_URL') ?? ''
-  const SUPABASE_SERVICE_KEY    = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+  // Services Docker internes (sans passer par Kong)
+  const AUTH_URL    = 'http://auth:9999'
+  const REST_URL    = 'http://rest:3000'
+  const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 
   const json = (body: unknown, status = 200) =>
     new Response(JSON.stringify(body), {
@@ -27,23 +29,20 @@ Deno.serve(async (req) => {
 
     const token = authHeader.replace('Bearer ', '')
 
-    const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'apikey': SUPABASE_SERVICE_KEY,
-      },
+    const userRes = await fetch(`${AUTH_URL}/user`, {
+      headers: { 'Authorization': `Bearer ${token}` },
     })
 
     if (!userRes.ok) return json({ error: 'Token invalide' }, 401)
     const caller = await userRes.json()
 
-    // 2. Vérifier le rôle admin dans public.users
+    // 2. Vérifier le rôle admin dans public.users (PostgREST direct)
     const profileRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/users?id=eq.${caller.id}&select=role&limit=1`,
+      `${REST_URL}/users?id=eq.${caller.id}&select=role&limit=1`,
       {
         headers: {
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SERVICE_KEY}`,
+          'Accept': 'application/json',
         },
       }
     )
@@ -54,7 +53,8 @@ Deno.serve(async (req) => {
     }
 
     // 3. Lire les données du nouvel utilisateur
-    const { email, password, full_name, organisation, role } = await req.json()
+    const body = await req.json()
+    const { email, password, full_name, organisation, role } = body
 
     if (!email || !password || !full_name) {
       return json({ error: 'Champs obligatoires manquants (email, password, full_name)' }, 400)
@@ -64,12 +64,11 @@ Deno.serve(async (req) => {
       return json({ error: 'Le mot de passe doit faire au moins 8 caractères' }, 400)
     }
 
-    // 4. Créer l'utilisateur via l'API admin
-    const createRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
+    // 4. Créer l'utilisateur via l'API admin Auth (direct)
+    const createRes = await fetch(`${AUTH_URL}/admin/users`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SERVICE_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -90,13 +89,12 @@ Deno.serve(async (req) => {
       return json({ error: newUser.message ?? newUser.msg ?? 'Erreur création utilisateur' }, 400)
     }
 
-    // 5. Upsert du profil dans public.users
+    // 5. Upsert du profil dans public.users (PostgREST direct)
     if (newUser.id) {
-      await fetch(`${SUPABASE_URL}/rest/v1/users`, {
+      await fetch(`${REST_URL}/users`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SERVICE_KEY}`,
           'Content-Type': 'application/json',
           'Prefer': 'resolution=merge-duplicates',
         },
