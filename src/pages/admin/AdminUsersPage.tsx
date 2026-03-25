@@ -15,6 +15,11 @@ interface InviteForm {
   role: UserRole
 }
 
+interface EditForm {
+  full_name: string
+  organisation: string
+}
+
 const emptyInvite: InviteForm = {
   email: '',
   password: '',
@@ -28,6 +33,12 @@ export default function AdminUsersPage() {
   const { t } = useTranslation()
   const { user: currentUser } = useAuth()
   const queryClient = useQueryClient()
+
+  const [editingUser, setEditingUser] = useState<UserRow | null>(null)
+  const [editForm, setEditForm] = useState<EditForm>({ full_name: '', organisation: '' })
+  const [saving, setSaving] = useState(false)
+  const [deletingUser, setDeletingUser] = useState<UserRow | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   const [showInviteModal, setShowInviteModal] = useState(false)
   const [form, setForm] = useState<InviteForm>(emptyInvite)
@@ -51,6 +62,39 @@ export default function AdminUsersPage() {
     if (error) { toast.error(t('common.error')); return }
     toast.success(t('admin.users.updateSuccess'))
     queryClient.invalidateQueries({ queryKey: ['admin-users'] })
+  }
+
+  function openEdit(u: UserRow) {
+    setEditingUser(u)
+    setEditForm({ full_name: u.full_name, organisation: u.organisation ?? '' })
+  }
+
+  async function handleEdit(e: FormEvent) {
+    e.preventDefault()
+    if (!editingUser) return
+    setSaving(true)
+    const { error } = await supabase
+      .from('users')
+      .update({ full_name: editForm.full_name, organisation: editForm.organisation })
+      .eq('id', editingUser.id)
+    setSaving(false)
+    if (error) { toast.error(t('common.error')); return }
+    toast.success(t('admin.users.updateSuccess'))
+    setEditingUser(null)
+    queryClient.invalidateQueries({ queryKey: ['admin-users'] })
+    queryClient.invalidateQueries({ queryKey: ['advisors'] })
+  }
+
+  async function handleDelete() {
+    if (!deletingUser) return
+    setDeleting(true)
+    const { error } = await supabase.from('users').delete().eq('id', deletingUser.id)
+    setDeleting(false)
+    if (error) { toast.error(t('common.error')); return }
+    toast.success(t('admin.users.deleteSuccess'))
+    setDeletingUser(null)
+    queryClient.invalidateQueries({ queryKey: ['admin-users'] })
+    queryClient.invalidateQueries({ queryKey: ['advisors'] })
   }
 
   async function handleActiveToggle(userId: string, is_active: boolean) {
@@ -155,6 +199,7 @@ export default function AdminUsersPage() {
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500 hidden sm:table-cell">{t('admin.users.organisation')}</th>
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-500">{t('admin.users.role')}</th>
                 <th className="px-4 py-2.5 text-center text-xs font-medium text-gray-500">{t('admin.users.active')}</th>
+                <th className="px-4 py-2.5 text-center text-xs font-medium text-gray-500">{t('common.actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -188,12 +233,101 @@ export default function AdminUsersPage() {
                       title={t('admin.users.active')}
                     />
                   </td>
+                  <td className="px-4 py-3 text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => openEdit(u)}
+                        className="p-1.5 rounded text-gray-400 hover:text-primary hover:bg-primary-50 transition-colors"
+                        title={t('common.edit')}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                      </button>
+                      {u.id !== currentUser?.id && (
+                        <button
+                          onClick={() => setDeletingUser(u)}
+                          className="p-1.5 rounded text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                          title={t('common.delete')}
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                            <path d="M10 11v6M14 11v6"/>
+                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
       </div>
+
+      {/* ── Modale édition ──────────────────────────────────────────────── */}
+      {editingUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <h2 className="font-semibold text-gray-900">{t('common.edit')} — {editingUser.full_name}</h2>
+              <button onClick={() => setEditingUser(null)} className="p-1 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+            <form onSubmit={handleEdit} className="px-6 py-5 space-y-4">
+              <div>
+                <label className="label">{t('admin.users.fullName')} *</label>
+                <input type="text" className="input" value={editForm.full_name}
+                  onChange={e => setEditForm(f => ({ ...f, full_name: e.target.value }))} required autoFocus />
+              </div>
+              <div>
+                <label className="label">{t('admin.users.organisation')}</label>
+                <input type="text" className="input" value={editForm.organisation}
+                  onChange={e => setEditForm(f => ({ ...f, organisation: e.target.value }))} />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="submit" className="btn-primary flex-1 justify-center" disabled={saving}>
+                  {saving ? t('common.loading') : t('common.save')}
+                </button>
+                <button type="button" className="btn-secondary" onClick={() => setEditingUser(null)} disabled={saving}>
+                  {t('common.cancel')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modale suppression ───────────────────────────────────────────── */}
+      {deletingUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm">
+            <div className="px-6 py-5 space-y-4">
+              <p className="text-sm text-gray-700">
+                Supprimer <span className="font-semibold">{deletingUser.full_name}</span> ? Cette action est irréversible.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleDelete}
+                  className="btn-primary flex-1 justify-center bg-red-600 hover:bg-red-700 focus:ring-red-500"
+                  disabled={deleting}
+                >
+                  {deleting ? t('common.loading') : t('common.delete')}
+                </button>
+                <button type="button" className="btn-secondary" onClick={() => setDeletingUser(null)} disabled={deleting}>
+                  {t('common.cancel')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Modale invitation ──────────────────────────────────────────── */}
       {showInviteModal && (

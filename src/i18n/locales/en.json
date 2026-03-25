@@ -264,6 +264,7 @@
       "roles": { "advisor": "Advisor", "admin": "Administrator" },
       "changeRole": "Change role",
       "updateSuccess": "User updated",
+      "deleteSuccess": "User deleted",
       "you": "you",
       "invite": {
         "button": "New user",
